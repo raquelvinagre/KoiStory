@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koi Story</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <!-- The library --- Can be a local version -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script async src="https://mrdoob.github.io/stats.js/build/stats.min.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://threejs.org/build/three.module.js",
+                "OrbitControls": "https://threejs.org/examples/jsm/controls/OrbitControls.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
