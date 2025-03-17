@@ -2,7 +2,7 @@
 
 ## Koi Story
 
-[Live Demo]
+[Live Demo](https://raquelvinagre.github.io/KoiStory/)
 
 ### Introduction
 The purpose of this project is to develop a 3D application to demonstrate the modeling and animation of objects, use of lighting, textures, (...), in a scenario of choice, with interactivity and user control.

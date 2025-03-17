@@ -29,7 +29,7 @@ function loadEnvironment() {
 
     // Load HDR texture using RGBELoader
     const hdrLoader = new RGBELoader();
-    hdrLoader.load('/textures/chinese_garden.hdr', function (texture) {
+    hdrLoader.load('textures/chinese_garden.hdr', function (texture) {
         // Set the environment map
         texture.mapping = THREE.EquirectangularReflectionMapping;
         scene.background = texture; // Set the background to the HDR image
