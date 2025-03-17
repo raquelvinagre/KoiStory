@@ -127,6 +127,7 @@ function createWater() {
     setupDepthBuffer();
     water = createWaterMesh();
     scene.add(water);
+    water.receiveShadow = true;
 }
 
 function updateWater() {

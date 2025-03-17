@@ -8,11 +8,20 @@ const fishGroup = new THREE.Group();
 scene.add(group);
 scene.add(fishGroup);
 
+function enableShadowCasting(model) {
+    model.traverse((node) => {
+        if (node.isMesh) {
+            node.castShadow = true;
+        }
+    });
+}
+
 function loadModel(path, position, scale, parent = scene) {
     loader.load(path, (gltf) => {
         const model = gltf.scene;
         model.position.set(...position);
         model.scale.set(...scale);
+        enableShadowCasting(model);
         parent.add(model);
     }, undefined, (error) => console.error(`Error loading ${path}:`, error));
 }
@@ -28,6 +37,7 @@ function createMultipleInstances(path, count, radius, scale, parent = scene) {
                 radius * Math.sin(angle)
             );
             instance.scale.set(...scale);
+            enableShadowCasting(instance);
             parent.add(instance);
         }
     }, undefined, (error) => console.error(`Error loading ${path}:`, error));
@@ -41,6 +51,7 @@ function loadModels() {
         model.position.set(-1.25, 4.55, 9.55);
         model.scale.set(0.1, 0.1, 0.1);
         model.rotation.set(0, 0, -Math.PI/4);
+        enableShadowCasting(model);
         group.add(model);
     }, undefined, (error) => console.error('Error loading models/ukelele.glb:', error));
 

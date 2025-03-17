@@ -13,7 +13,7 @@ button.style.position = "absolute";
 button.style.top = "50px";
 button.style.left = "10px";
 document.body.appendChild(button);
-button.style.display = "none"; // Initially hide the button
+button.style.display = "none";
 
 export function initializeControls(sceneInstance) {
     cameraPivot = new THREE.Object3D();
@@ -22,13 +22,13 @@ export function initializeControls(sceneInstance) {
     fixedCamera.position.set(0, 10, 10);  // Initial fixed camera position
     fixedCamera.lookAt(0, 0, 50);  // Change the target position here
 
-    camera.position.set(0, 27, 60); // Set follow camera position
+    camera.position.set(0, 30, 60); // Set follow camera position
     cameraPivot.add(camera);  
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
-    controls.target.set(0, 0, 0);  // Change the target position here
+    //controls.target.set(0, 0, 0);  // Change the target position here
 
     button.addEventListener("click", () => {
         isFixedCamera = !isFixedCamera;
@@ -70,7 +70,7 @@ export function updateCamera(group, controls) {
     } else {
         cameraPivot.position.copy(group.position);
 
-        controls.target.copy(group.position);  // Change the target position here
+        controls.target.copy(group.position); 
         controls.update();
 
         renderer.render(scene, camera);
