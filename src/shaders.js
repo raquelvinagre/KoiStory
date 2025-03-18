@@ -85,7 +85,7 @@ function createWaterMesh() {
         uScreenSize: { value: new THREE.Vector4(window.innerWidth, window.innerHeight, 1 / window.innerWidth, 1 / window.innerHeight) }
     };
 
-    const waterGeometry = new THREE.PlaneGeometry(2000, 2000, 1000, 1000);
+    const waterGeometry = new THREE.CircleGeometry(800, 64);
     const waterMaterial = new THREE.ShaderMaterial({
         uniforms: uniforms,
         vertexShader: vertShader,

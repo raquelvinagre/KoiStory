@@ -11,10 +11,10 @@ function loadEnvironment() {
     const spotLight = new THREE.SpotLight(0xffffff, 4);
     spotLight.position.set(0, 50, 0);
 
-    spotLight.castShadow = true;
     spotLight.decay = 1; 
     spotLight.shadow.mapSize.width = 2048;
     spotLight.shadow.mapSize.height = 2048;
+    spotLight.castShadow = true;
     scene.add(spotLight);
 
     scene.renderer = renderer;
@@ -22,13 +22,25 @@ function loadEnvironment() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(2000, 2000),
+        new THREE.CircleGeometry(800, 64),
         new THREE.MeshBasicMaterial({ color: 0x7ACA3D })
     );
+    
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -30; 
     scene.add(ground);
     ground.receiveShadow = true;
+
+    const geometry = new THREE.TorusGeometry(800, 20, 20, 100);
+    const material = new THREE.MeshBasicMaterial({ color: 0x808080 });
+    
+    const torus = new THREE.Mesh(geometry, material);
+    torus.rotation.x = Math.PI / 2; // Make the torus horizontal (along the XZ plane)
+    torus.position.set(0,-10,0);
+    torus.castShadow = true;
+    torus.receiveShadow = true;
+    
+    scene.add(torus);
 
     const gameArea = new THREE.Mesh(
         new THREE.PlaneGeometry(300, 300, 1, 1),

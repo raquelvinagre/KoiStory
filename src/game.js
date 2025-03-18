@@ -1,72 +1,95 @@
 import * as THREE from 'three';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-// import { songNotes, beatsPerMeasure } from './song';
-//import ViewControls from './view_controls';
+import { scene } from './scene.js';
 
-class FishGame {
-  constructor(renderer, camera, scene, key, musicDelay) {
-    this.renderer = renderer;
-    this.camera = camera;
-    this.scene = scene;
-    this.key = key;
-    this.musicDelay = musicDelay;
+// Create a group for notes
+const notesGroup = new THREE.Group();
+scene.add(notesGroup);
 
-    this.fishModels = [];
-    this.fishSpeed = 1.5;  // Adjust for realistic movement
-    this.loader = new GLTFLoader();
+let notes = [];
+let isRunning = false;
 
-    this.fishPositions = [-50, -25, 0, 25, 50]; // Fish spawn points
-  }
+// Create or reuse the game status text
+let gameStatusText = document.getElementById('gameStatusText');
 
-  setup() {
-    this.setWindowResizer();
-    this.loadFishModels();
-    //this.controls = new ViewControls(this.camera, this.renderer);
-    this.gameLoop();
-  }
+if (!gameStatusText) {
+  gameStatusText = document.createElement('div');
+  gameStatusText.id = 'gameStatusText';
+  gameStatusText.style.position = 'absolute';
+  gameStatusText.style.top = '100px';
+  gameStatusText.style.left = '10px';
+  gameStatusText.style.color = 'white';
+  gameStatusText.style.fontSize = '24px';
+  gameStatusText.innerHTML = 'Press Start to Play';
+  document.body.appendChild(gameStatusText);
+}
 
-  setWindowResizer() {
-    window.addEventListener('resize', () => {
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-    });
-  }
+function createLines() {
+  const linesGroup = new THREE.Group();
+  scene.add(linesGroup);
+  linesGroup.name = 'linesGroup';
 
-  loadFishModels() {
-    for (let i = 0; i < 5; i++) {
-      this.loader.load('models/fish.glb', (gltf) => {
-        let fish = gltf.scene;
-        fish.scale.set(0.5, 0.5, 0.5);
-        fish.position.set(this.fishPositions[i], 0, -500); // Start far away
-        this.scene.add(fish);
-        this.fishModels.push(fish);
-      });
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+  const positions = [-9, -3, 3, 9];
+
+  positions.forEach((xPosition) => {
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(xPosition, 3, 80),
+      new THREE.Vector3(xPosition, 3, 15)
+    ]);
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    linesGroup.add(line);
+  });
+}
+
+// Function to create a note
+function createNote(color, xPosition) {
+  const geometry = new THREE.SphereGeometry(2, 30, 30);
+  const material = new THREE.MeshBasicMaterial({ color: color });
+  const note = new THREE.Mesh(geometry, material);
+
+  // Set initial position (ensuring visibility)
+  note.position.set(xPosition, 3, 80);  
+  notesGroup.add(note);
+  notes.push(note);
+}
+
+// Function to update notes in the animation loop
+function updateNotes() {
+  if (!isRunning) return;
+
+  notes.forEach((note) => {
+    note.position.z -= 0.5;  // Move towards the camera
+    // note.position.y -= 0.23;  // Move downwards
+    if (note.position.z <= 20) {  
+      // Respawn the note when it passes the camera
+      note.position.set(note.position.x, 3, 80);
     }
-  }
+  });
+}
 
-  moveFish() {
-    this.fishModels.forEach((fish) => {
-      fish.position.z += this.fishSpeed; // Move toward the player
-      if (fish.position.z > 10) {
-        fish.position.z = -500; // Reset position when too close
-      }
-    });
-  }
+// Start game function
+function startGame() {
+  if (isRunning) return;
+  isRunning = true;
+  gameStatusText.innerHTML = 'Game is Running!';
 
-  sceneUpdate() {
-    this.moveFish();
-  }
+  createLines();
 
-  sceneRender() {
-    this.renderer.render(this.scene, this.camera);
-  }
-
-  gameLoop() {
-    requestAnimationFrame(this.gameLoop.bind(this));
-    this.sceneUpdate();
-    this.sceneRender();
+  // Spawn initial notes with different colors and positions
+  const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+  const positions = [-9, -3, 3, 9];
+  for (let i = 0; i < 4; i++) {
+    createNote(colors[i], positions[i]);
   }
 }
 
-export default FishGame;
+// Stop game function
+function stopGame() {
+  scene.remove(scene.getObjectByName('linesGroup'));
+  isRunning = false;
+  gameStatusText.innerHTML = 'Game is Stopped!';
+  notes.forEach(note => notesGroup.remove(note));
+  notes = [];
+}
+
+export { startGame, stopGame, updateNotes };

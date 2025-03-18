@@ -12,6 +12,7 @@ function enableShadowCasting(model) {
     model.traverse((node) => {
         if (node.isMesh) {
             node.castShadow = true;
+            node.receiveShadow = true;
         }
     });
 }
@@ -61,20 +62,20 @@ function loadModels() {
     loadModel("models/lilypad2.glb", [200, 0, -250], [25, 25, 25]);
 
     loadModel("models/koi.glb", [-100, -4, 0], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [75, -2, 50], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [0, -4, 300], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [100, 0, -300], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi2.glb", [75, -2, 50], [50, 50, 50], fishGroup);
+    loadModel("models/koi2.glb", [0, 5, 200], [50, 50, 50], fishGroup);
+    loadModel("models/koi2.glb", [100, 0, -300], [50, 50, 50], fishGroup);
     loadModel("models/koi.glb", [300, -5, 400], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi.glb", [400, 0, 0], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi.glb", [-280, -8, -300], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [-250, -7, 400], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi2.glb", [-250, -7, 400], [50, 50, 50], fishGroup);
     loadModel("models/koi.glb", [50, -5, -400], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi.glb", [-330, 0, 120], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [-70, -7, 350], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi2.glb", [-70, -7, 350], [50, 50, 50], fishGroup);
 
-    loadModel("models/gate.glb", [0, -30, -75], [15, 15, 15]);
+    loadModel("models/gate.glb", [10, -30, -75], [15, 15, 15]);
 
-    loadModel("models/rock.glb", [200, -30, 200], [20, 20, 20]);
+    loadModel("models/rock.glb", [300, -30, 250], [20, 20, 20]);
     loadModel("models/rock.glb", [-400, -30, 300], [20, 20, 20]);
     loadModel("models/rock.glb", [600, -30, -100], [20, 20, 20]);
     loadModel("models/rock.glb", [-400, -30, -100], [20, 20, 20]);
