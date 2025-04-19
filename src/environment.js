@@ -43,7 +43,7 @@ function loadEnvironment() {
     scene.add(torus);
 
     const gameArea = new THREE.Mesh(
-        new THREE.PlaneGeometry(300, 300, 1, 1),
+        new THREE.CircleGeometry(200, 64),
         new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })
     );
     gameArea.rotation.x = -Math.PI / 2;

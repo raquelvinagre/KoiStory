@@ -75,10 +75,13 @@ function loadModels() {
 
     loadModel("models/gate.glb", [10, -30, -75], [15, 15, 15]);
 
-    loadModel("models/rock.glb", [300, -30, 250], [20, 20, 20]);
     loadModel("models/rock.glb", [-400, -30, 300], [20, 20, 20]);
     loadModel("models/rock.glb", [600, -30, -100], [20, 20, 20]);
     loadModel("models/rock.glb", [-400, -30, -100], [20, 20, 20]);
+
+    loadModel("models/sakura.glb", [730, -40, -70], [100, 100, 100]);
+    loadModel("models/sakura.glb", [-500, -40, -500], [100, 100, 100]);
+    loadModel("models/sakura.glb", [-545, -40, 520], [100, 100, 100]);
 
     loadModel("models/flower.glb", [50, -1, 300], [150, 150, 150]);
     loadModel("models/flower.glb", [0, -1, -250], [150, 150, 150]);
