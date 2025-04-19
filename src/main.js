@@ -28,7 +28,7 @@ const titleContainer = document.createElement('div');
 titleContainer.style.display = 'flex';
 titleContainer.style.flexDirection = 'row';
 titleContainer.style.alignItems = 'center';
-titleContainer.style.backgroundColor = 'rgba(0, 14, 39, 0.7)';
+titleContainer.style.backgroundColor = 'rgba(0, 14, 39, 0.9)';
 titleContainer.style.padding = '20px 40px';
 titleContainer.style.borderRadius = '40px';
 titleContainer.style.marginBottom = '20px';
@@ -59,6 +59,7 @@ startButton.style.padding = '12px 24px';
 startButton.style.fontSize = '20px';
 startButton.style.cursor = 'pointer';
 startButton.style.borderRadius = '10px';
+startButton.style.marginBottom = '20px';
 startButton.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
 startButton.style.transition = 'background-color 0.3s';
 
@@ -66,6 +67,21 @@ startButton.onmouseenter = () => startButton.style.backgroundColor = 'rgba(203, 
 startButton.onmouseleave = () => startButton.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';;
 
 titleScreen.appendChild(startButton);
+
+const instructions = document.createElement('p');
+instructions.textContent = 'Use the A,W,S,D keys to control the boat, and the mouse to rotate the camera.';
+instructions.style.color = 'white';
+instructions.style.fontSize = '20px';
+instructions.style.marginTop = '10px';
+instructions.style.textAlign = 'center';
+instructions.style.maxWidth = '600px';
+instructions.style.lineHeight = '1.5';
+instructions.style.opacity = '0.8';
+instructions.style.transition = 'opacity 0.3s';
+instructions.onmouseenter = () => instructions.style.opacity = '1';
+instructions.onmouseleave = () => instructions.style.opacity = '0.8'; 
+
+titleScreen.appendChild(instructions);
 
 document.body.appendChild(titleScreen);
 
