@@ -226,26 +226,20 @@ function loadNoteMapAndStart(filePath = 'music/note_map.json') {
   fetch(filePath)
     .then(response => response.json())
     .then(noteMap => {
-      noteMap.sort((a, b) => a.time - b.time);  // Ensure notes are in time order
-      let currentNoteIndex = 0;
+      noteMap.sort((a, b) => a.time - b.time);
 
-      const intervalId = setInterval(() => {
-        // Get the next note to be played
-        const note = noteMap[currentNoteIndex];
-        if (note) {
-          const delay = note.time * 500;
-          
-          if (currentTime >= note.time) {
-            createNote(note.lane, note.length || 0);
-            currentNoteIndex++;  // Move to next note in the array
-          }
-        } else {
-          // If there are no more notes to process, clear the interval
-          clearInterval(intervalId);
-        }
-        currentTime += 0.1;  // Increment current time
-      }, 100);  // Check every 100ms
+      const startTime = performance.now();
 
+      noteMap.forEach(note => {
+        const delay = note.time * 500;
+
+        const timeoutId = setTimeout(() => {
+          createNote(note.lane, note.length || 0);
+        }, delay);
+        noteSpawnTimeouts.push(timeoutId);
+      });
+
+      // Start music a bit after notes begin (e.g. after 0.5s) -> not being used
       setTimeout(() => {
         audio.currentTime = 0;
         audio.play();
