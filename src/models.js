@@ -5,6 +5,7 @@ import { scene } from "./scene.js";
 const loader = new GLTFLoader();
 const group = new THREE.Group();
 const fishGroup = new THREE.Group();
+const fishGroup2 = new THREE.Group();
 scene.add(group);
 scene.add(fishGroup);
 
@@ -26,6 +27,18 @@ function loadModel(path, position, scale, parent = scene) {
         parent.add(model);
     }, undefined, (error) => console.error(`Error loading ${path}:`, error));
 }
+
+function loadFish(path, position, scale, parent = scene) { //the fish from the concert need to be rotated
+    loader.load(path, (gltf) => {
+        const model = gltf.scene;
+        model.position.set(...position);
+        model.scale.set(...scale);
+        model.rotation.y = Math.PI; 
+        enableShadowCasting(model);
+        parent.add(model);
+    }, undefined, (error) => console.error(`Error loading ${path}:`, error));
+}
+
 
 function createMultipleInstances(path, count, radius, scale, parent = scene) {
     loader.load(path, (gltf) => {
@@ -63,16 +76,25 @@ function loadModels() {
 
     loadModel("models/koi.glb", [-100, -4, 0], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [75, -2, 50], [50, 50, 50], fishGroup);
-    loadModel("models/koi2.glb", [0, 5, 200], [50, 50, 50], fishGroup);
-    loadModel("models/koi2.glb", [100, 0, -300], [50, 50, 50], fishGroup);
+    loadModel("models/koi2.glb", [140, -2, 200], [50, 50, 50], fishGroup);
+    loadModel("models/koi2.glb", [100, -2, -300], [50, 50, 50], fishGroup);
     loadModel("models/koi.glb", [300, -5, 400], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [400, 0, 0], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [400, -3, 0], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi.glb", [-280, -8, -300], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [-250, -7, 400], [50, 50, 50], fishGroup);
     loadModel("models/koi.glb", [50, -5, -400], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [-330, 0, 120], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [-330, -3, 120], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [-70, -7, 350], [50, 50, 50], fishGroup);
 
+    //loadFish("models/koi.glb", [-40, -2, 80], [0.05, 0.05, 0.05], fishGroup2);
+    loadFish("models/koi2.glb", [-60, -2, 80], [50, 50, 50], fishGroup2);
+    loadFish("models/koi2.glb", [30, -2, 50], [50, 50, 50], fishGroup2);
+    loadFish("models/koi2.glb", [-40, -2, 60], [50, 50, 50], fishGroup2);
+    //loadFish("models/koi.glb", [80, -2, 110], [0.05, 0.05, 0.05], fishGroup2);
+    loadFish("models/koi2.glb", [50, -2, 110], [50, 50, 50], fishGroup2);
+    loadFish("models/koi2.glb", [-30, -2, 90], [50, 50, 50], fishGroup2);
+    loadFish("models/koi2.glb", [60, -2, 80], [50, 50, 50], fishGroup2);
+    
     loadModel("models/gate.glb", [10, -30, -75], [15, 15, 15]);
 
     loadModel("models/rock.glb", [-400, -30, 300], [20, 20, 20]);
@@ -93,4 +115,4 @@ function loadModels() {
 
 }
 
-export { loadModels, group, fishGroup };
+export { loadModels, group, fishGroup, fishGroup2 };
