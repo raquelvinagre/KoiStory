@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { scene } from './scene.js';
 import { fishGroup2 } from './models.js';
+import { selectedDifficulty } from './controls.js';
 
 const notesGroup = new THREE.Group();
 const fretsGroup = new THREE.Group();
@@ -29,10 +30,20 @@ const HIT_THRESHOLD = 5;
 const laneData = [
   { x: 9, color: 0x588af9, key: 'd' },
   { x: 3, color: 0x60d25d, key: 'f' },
-  { x: -3,  color: 0xfcac5d, key: 'j' }, 
-  { x: -9,  color: 0xf48197, key: 'k' }
+  { x: -3, color: 0xfcac5d, key: 'j' }, 
+  { x: -9, color: 0xf48197, key: 'k' }
 ];
 
+let audio = document.getElementById('bgAudio');
+if (!audio) {
+  audio = document.createElement('audio');
+  audio.id = 'bgAudio';
+  audio.preload = 'auto';
+  audio.style.display = 'none';
+  document.body.appendChild(audio);
+}
+
+// UI setup
 let gameStatusText = document.getElementById('gameStatusText');
 if (!gameStatusText) {
   gameStatusText = document.createElement('div');
@@ -79,16 +90,7 @@ function updateLeaderboard() {
 
 updateLeaderboard();
 
-let audio = document.getElementById('bgAudio');
-if (!audio) {
-  audio = document.createElement('audio');
-  audio.id = 'bgAudio';
-  audio.src = 'music/song.mp3';
-  audio.preload = 'auto';
-  audio.style.display = 'none';
-  document.body.appendChild(audio);
-}
-
+// Visuals
 function createLines() {
   const linesGroup = new THREE.Group();
   scene.add(linesGroup);
@@ -120,12 +122,10 @@ function createFretLine() {
 
 function createHitPads() {
   hitPads = [];
-
   laneData.forEach(({ x, color }) => {
     const geometry = new THREE.CylinderGeometry(2, 2, 0.5, 32);
     const material = new THREE.MeshBasicMaterial({ color });
     const pad = new THREE.Mesh(geometry, material);
-
     pad.position.set(x, 3, HIT_ZONE_Z);
     hitPadsGroup.add(pad);
     hitPads.push(pad);
@@ -157,6 +157,7 @@ function animateHitPad(laneIndex) {
   jump();
 }
 
+// Feedback
 function showFeedback(text, position, color = 'white') {
   const div = document.createElement('div');
   div.innerText = text;
@@ -197,6 +198,7 @@ function updateFeedbacks(camera, renderer) {
   }
 }
 
+// Notes
 function createNote(laneIndex, length = 0) {
   const { x, color } = laneData[laneIndex];
 
@@ -219,6 +221,7 @@ function createNote(laneIndex, length = 0) {
   createFretLine();
 }
 
+// Fish animation
 function addFishGroup() {
   scene.add(fishGroup2);  
 }
@@ -226,23 +229,16 @@ function addFishGroup() {
 function updateFishAnimation() {
   if (fishGroup2) {
     fishGroup2.children.forEach((fish) => {
-        if (fish.initialPosition === undefined) {
-            fish.initialPosition = fish.position.clone();
-            fish.initialRotation = fish.rotation.clone();
-        }
+      if (fish.initialPosition === undefined) {
+        fish.initialPosition = fish.position.clone();
+        fish.initialRotation = fish.rotation.clone();
+      }
 
-        // Bobbing up and down
-        fish.position.y = fish.initialPosition.y + Math.sin(time2 * 2) * 0.08;
-
-        // Nodding (head tilt forward/back)
-        fish.rotation.x = fish.initialRotation.x + Math.sin(time2 * 4) * 0.08;
-
-        // Swaying side to side
-        fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 1.5) * 0.05;
-
-        // Slight rolling for vibe
-        fish.rotation.z = fish.initialRotation.z + Math.sin(time2 * 3) * 0.1;
-        time2 += 0.01;
+      fish.position.y = fish.initialPosition.y + Math.sin(time2 * 2) * 0.08;
+      fish.rotation.x = fish.initialRotation.x + Math.sin(time2 * 4) * 0.08;
+      fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 1.5) * 0.05;
+      fish.rotation.z = fish.initialRotation.z + Math.sin(time2 * 3) * 0.1;
+      time2 += 0.01;
     });
   }
 }
@@ -341,15 +337,14 @@ function handleKeyUp(event) {
   heldKeys.delete(key);
 }
 
-let currentTime = 0;
+function loadNoteMapAndStart(selectedDifficulty) {
+  const filePath = `music/note_map_${selectedDifficulty}.json`;
+  const audioPath = `music/${selectedDifficulty}.mp3`;
 
-function loadNoteMapAndStart(filePath = 'music/note_map.json') {
   fetch(filePath)
     .then(response => response.json())
     .then(noteMap => {
       noteMap.sort((a, b) => a.time - b.time);
-
-      const startTime = performance.now();
 
       noteMap.forEach(note => {
         const delay = note.time * 500;
@@ -360,10 +355,9 @@ function loadNoteMapAndStart(filePath = 'music/note_map.json') {
         noteSpawnTimeouts.push(timeoutId);
       });
 
-      setTimeout(() => {
-        audio.currentTime = 0;
-        audio.play();
-      }, 1);
+      audio.src = audioPath;
+      audio.currentTime = 0;
+      audio.play();
     })
     .catch(err => console.error("Error loading note map:", err));
 }
@@ -374,7 +368,7 @@ function removeFishGroup() {
   }
 }
 
-function startGame() {
+function startGame(selectedDifficulty) {
   if (isRunning) return;
   isRunning = true;
   score = 0;
@@ -382,7 +376,7 @@ function startGame() {
   createLines();
   createFretLine();
   createHitPads();
-  loadNoteMapAndStart();
+  loadNoteMapAndStart(selectedDifficulty);
   addFishGroup();
   document.addEventListener('keydown', handleKeyPress);
   document.addEventListener('keyup', handleKeyUp);

@@ -13,6 +13,7 @@ let lastCameraState = null;
 
 let titleScreen;
 let countdownText;
+let selectedDifficulty = 'hard'; // default
 
 // Button to toggle between fixed and follow camera
 const button = document.createElement("button");
@@ -46,6 +47,15 @@ export function initializeControls(sceneInstance) {
     return { cameraPivot, fixedCamera, controls, isFixedCamera };
 }
 
+function highlightSelectedDifficulty(container, selectedBtn) {
+    Array.from(container.children).forEach(btn => {
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
+    });
+    selectedBtn.style.backgroundColor = '#afd2dc';
+    selectedBtn.style.color = 'black';
+}
+
 function createTitleScreen() {
     if (!titleScreen) {
         titleScreen = document.createElement('div');
@@ -64,11 +74,37 @@ function createTitleScreen() {
         titleScreen.style.color = 'white';
         titleScreen.style.textAlign = 'center';
         titleScreen.innerHTML = `
-            <h1>🎸 Koy Story is rhythm based game!</h1>
+            <h1>🎸 Koy Story is a rhythm based game!</h1>
             <p>Use headphones for a better experience.</p>
             <p>Hit the correct keys as notes cross the line!</p>
             <p>Place your fingers on the following keys: <strong>D F J K</strong></p>
         `;
+
+        const difficultyContainer = document.createElement('div');
+        difficultyContainer.style.position = 'absolute';
+        difficultyContainer.style.top = '10px';
+        difficultyContainer.style.right = '10px';
+        difficultyContainer.style.display = 'flex';
+        difficultyContainer.style.gap = '10px';
+
+        ['Easy', 'Medium', 'Hard'].forEach(level => {
+            const button = document.createElement('button');
+            button.innerText = level;
+            button.style.padding = '6px 12px';
+            button.style.fontSize = '14px';
+            button.style.borderRadius = '5px';
+            button.dataset.difficulty = level.toLowerCase();
+
+            button.addEventListener('click', () => {
+                selectedDifficulty = button.dataset.difficulty;
+                highlightSelectedDifficulty(difficultyContainer, button);
+            });
+
+            difficultyContainer.appendChild(button);
+        });
+
+        titleScreen.appendChild(difficultyContainer);
+
 
         const startButton = document.createElement('button');
         startButton.id = 'startButton';
@@ -105,6 +141,23 @@ function createCountdownText() {
     }
 }
 
+function startGameWithDifficulty(difficulty) {
+    switch (difficulty) {
+        case 'easy':
+            startGame('easy');
+            break;
+        case 'medium':
+            startGame('medium');
+            break;
+        case 'hard':
+            startGame('hard');
+            break;
+        default:
+            startGame('hard');
+    }
+}
+
+
 function runCountdown() {
     createCountdownText();
     let count = 3;
@@ -117,7 +170,9 @@ function runCountdown() {
         } else if (count < 0) {
             clearInterval(countdownInterval);
             countdownText.innerText = '';
-            startGame();
+        
+            startGameWithDifficulty(selectedDifficulty);
+        
         } else {
             countdownText.innerText = count;
         }
@@ -188,3 +243,5 @@ export function updateCamera(group, controls) {
         renderer.render(scene, camera);
     }
 }
+
+export { selectedDifficulty };
