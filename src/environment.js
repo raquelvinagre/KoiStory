@@ -48,7 +48,12 @@ function loadEnvironment() {
     scene.add(ground);
 
     const geometry = new THREE.TorusGeometry(800, 20, 20, 100);
-    const material = new THREE.MeshBasicMaterial({ color: 0x808080 });
+    const torusTexture = new THREE.TextureLoader().load('textures/stone.jpg');
+    torusTexture.wrapS = THREE.RepeatWrapping;
+    torusTexture.wrapT = THREE.RepeatWrapping;
+    torusTexture.repeat.set(8, 2);
+
+    const material = new THREE.MeshPhongMaterial({ map: torusTexture });
     
     const torus = new THREE.Mesh(geometry, material);
     torus.rotation.x = Math.PI / 2; // Make the torus horizontal (along the XZ plane)

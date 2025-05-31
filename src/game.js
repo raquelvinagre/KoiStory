@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { scene } from './scene.js';
 import { fishGroup2 } from './models.js';
-import { selectedDifficulty } from './controls.js';
+import { isFixedCamera } from './controls.js';
 
 const notesGroup = new THREE.Group();
 const fretsGroup = new THREE.Group();
@@ -30,7 +30,7 @@ const HIT_THRESHOLD = 5;
 const laneData = [
   { x: 9, color: 0x588af9, key: 'd' },
   { x: 3, color: 0x60d25d, key: 'f' },
-  { x: -3, color: 0xfcac5d, key: 'j' }, 
+  { x: -3, color: 0xfcac5d, key: 'j' },
   { x: -9, color: 0xf48197, key: 'k' }
 ];
 
@@ -61,10 +61,13 @@ if (!scoreText) {
   scoreText = document.createElement('div');
   scoreText.id = 'scoreText';
   scoreText.style.position = 'absolute';
-  scoreText.style.top = '130px';
+  scoreText.style.top = '200px';
   scoreText.style.left = '10px';
   scoreText.style.color = 'white';
   scoreText.style.fontSize = '20px';
+  scoreText.style.backgroundColor = 'rgba(0, 14, 39, 0.7)';
+  scoreText.style.borderRadius = '10px';
+  scoreText.style.padding = '10px';
   scoreText.innerHTML = `Score: ${score}`;
   document.body.appendChild(scoreText);
 }
@@ -74,13 +77,44 @@ if (!leaderboardDiv) {
   leaderboardDiv = document.createElement('div');
   leaderboardDiv.id = 'leaderboard';
   leaderboardDiv.style.position = 'absolute';
-  leaderboardDiv.style.top = '160px';
+  leaderboardDiv.style.top = '20px';
   leaderboardDiv.style.left = '10px';
   leaderboardDiv.style.color = 'white';
   leaderboardDiv.style.fontSize = '18px';
+  leaderboardDiv.style.backgroundColor = 'rgba(0, 14, 39, 0.7)';
+  leaderboardDiv.style.borderRadius = '10px';
+  leaderboardDiv.style.padding = '10px';
   leaderboardDiv.innerHTML = '<strong>Leaderboard:</strong>';
   document.body.appendChild(leaderboardDiv);
 }
+
+let pauseOverlay = document.getElementById('pauseOverlay');
+if (!pauseOverlay) {
+  pauseOverlay = document.createElement('div');
+  pauseOverlay.style.position = 'absolute';
+  pauseOverlay.id = 'pauseOverlay';
+  pauseOverlay.style.top = '0';
+  pauseOverlay.style.left = '0';
+  pauseOverlay.style.width = '100%';
+  pauseOverlay.style.height = '100%';
+  pauseOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+  pauseOverlay.style.display = 'flex';
+  pauseOverlay.style.flexDirection = 'column';
+  pauseOverlay.style.justifyContent = 'center';
+  pauseOverlay.style.alignItems = 'center';
+  pauseOverlay.style.zIndex = '10';
+  pauseOverlay.style.color = 'white';
+  pauseOverlay.style.textAlign = 'center';
+  pauseOverlay.innerHTML = `
+            <h1>Game Paused</h1>
+            <p>Press Escape to resume</p>
+        `;
+          pauseOverlay.style.display = 'none';
+
+
+  document.body.appendChild(pauseOverlay);
+}
+
 
 function updateLeaderboard() {
   leaderboardDiv.innerHTML = '<strong>Leaderboard:</strong><br>' + leaderboard
@@ -135,7 +169,7 @@ function createHitPads() {
 }
 
 function addPadLabels() {
- const container = document.createElement('div');
+  const container = document.createElement('div');
   container.id = 'htmlHitPads';
   container.style.position = 'absolute';
   container.style.bottom = '40px';
@@ -143,7 +177,7 @@ function addPadLabels() {
   container.style.transform = 'translateX(-50%)';
   container.style.display = 'flex';
   container.style.gap = '20px';
-  container.style.zIndex = '100';
+  container.style.zIndex = '8';
   document.body.appendChild(container);
 
   laneData.forEach(({ key, color }) => {
@@ -255,7 +289,7 @@ function createNote(laneIndex, length = 0) {
 
 // Fish animation
 function addFishGroup() {
-  scene.add(fishGroup2);  
+  scene.add(fishGroup2);
 }
 
 function updateFishAnimation() {
@@ -412,6 +446,31 @@ function startGame(selectedDifficulty) {
   addFishGroup();
   document.addEventListener('keydown', handleKeyPress);
   document.addEventListener('keyup', handleKeyUp);
+  document.addEventListener('keydown', (e) => {
+  if (isFixedCamera){
+    if (e.key === 'Escape') {
+    if (isRunning) {
+      pauseGame();
+    } else {
+      resumeGame();
+    }
+  }
+  }
+});
+}
+
+function pauseGame() {
+  if (!isRunning) return;
+  isRunning = false;
+  audio.pause();
+  pauseOverlay.style.display = 'block';
+}
+
+function resumeGame() {
+  if (isRunning) return;
+  isRunning = true;
+  audio.play();
+  pauseOverlay.style.display = 'none';
 }
 
 function stopGame() {

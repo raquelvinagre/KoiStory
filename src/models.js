@@ -58,7 +58,7 @@ function createMultipleInstances(path, count, radius, scale, parent = scene) {
 }
 
 function loadModels() {
-    loadModel("models/boat.glb", [0, 3.5, 0], [5, 5, 5], group);
+    loadModel("models/boat.glb", [0, 3.2, 0], [5, 5, 5], group);
     loadModel("models/bugcat.glb", [0, 3.5, 7.5], [0.1, 0.1, 0.1], group);
     loader.load("models/ukelele.glb", (gltf) => {
         const model = gltf.scene;
@@ -74,16 +74,16 @@ function loadModels() {
     loadModel("models/lilypad2.glb", [-250, 0, 300], [25, 25, 25]);
     loadModel("models/lilypad2.glb", [200, 0, -250], [25, 25, 25]);
 
-    loadModel("models/koi.glb", [-100, -4, 0], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi2.glb", [75, -2, 50], [50, 50, 50], fishGroup);
+    loadModel("models/koi.glb", [-100, -10, 0], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi2.glb", [150, -4, 50], [50, 50, 50], fishGroup);
     loadModel("models/koi2.glb", [140, -2, 200], [50, 50, 50], fishGroup);
-    loadModel("models/koi2.glb", [100, -2, -300], [50, 50, 50], fishGroup);
-    loadModel("models/koi.glb", [300, -5, 400], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [400, -3, 0], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [-280, -8, -300], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi2.glb", [100, -4, -300], [50, 50, 50], fishGroup);
+    loadModel("models/koi.glb", [300, -10, 400], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [400, -10, 0], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [-280, -10, -300], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [-250, -7, 400], [50, 50, 50], fishGroup);
-    loadModel("models/koi.glb", [50, -5, -400], [0.05, 0.05, 0.05], fishGroup);
-    loadModel("models/koi.glb", [-330, -3, 120], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [50, -10, -400], [0.05, 0.05, 0.05], fishGroup);
+    loadModel("models/koi.glb", [-330, -10, 120], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [-70, -7, 350], [50, 50, 50], fishGroup);
 
     //loadFish("models/koi.glb", [-40, -2, 80], [0.05, 0.05, 0.05], fishGroup2);

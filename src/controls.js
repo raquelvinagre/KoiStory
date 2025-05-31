@@ -13,15 +13,19 @@ let lastCameraState = null;
 
 let titleScreen;
 let countdownText;
-let selectedDifficulty = 'hard'; // default
+let selectedDifficulty = 'medium'; // default
 
 // Button to toggle between fixed and follow camera
 const button = document.createElement("div");
-button.innerHTML = "<strong>Hit Space to Start Playing</strong>";
+button.innerHTML = "<strong>Hit Space to start playing</strong>";
 button.style.color = "white";
 button.style.position = "absolute";
-button.style.bottom = "20%";
+button.style.bottom = "18%";
 button.style.left = "50%";
+button.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+button.style.padding = "10px 20px";
+button.style.borderRadius = "10px";
+button.style.zIndex = "100";
 button.style.transform = "translate(-50%, 50%)";
 document.body.appendChild(button);
 button.style.display = "none";
@@ -43,7 +47,7 @@ export function initializeControls(sceneInstance) {
     window.addEventListener("keydown", (event) => {
         if (event.code === "Space" && button.style.display === "block") {
             isFixedCamera = !isFixedCamera;
-            button.innerHTML = isFixedCamera ? "<strong>Hit Space to Leave</strong>" : "<strong>Hit Space to Start Playing</strong>";
+            button.innerHTML = isFixedCamera ? "<strong>Hit Space to leave</strong>" : "<strong>Hit Space to start playing</strong>";
             titleScreen.style.display = 'none';
         }
     });
@@ -81,6 +85,7 @@ function createTitleScreen() {
             <h1>🎸 Koy Story is a rhythm based game!</h1>
             <p>Use headphones for a better experience.</p>
             <p>Hit the correct keys as notes cross the line!</p>
+            <p>Default difficulty is <strong>Medium</strong>.</p>
             <p>Place your fingers on the following keys: <strong>D F J K</strong></p>
         `;
 
@@ -164,7 +169,7 @@ function startGameWithDifficulty(difficulty) {
             startGame('hard');
             break;
         default:
-            startGame('hard');
+            startGame('medium');
     }
 }
 
@@ -226,18 +231,57 @@ export function updateCamera(group) {
     group.rotation.z = group.initialRotation.z + Math.sin(time * 0.5) * 2 * 0.02;
     time += 0.1;
 
-    // Fish rocking logic
+    // Fish rocking logic + circular movement
     if (fishGroup) {
-        fishGroup.children.forEach((fish) => {
+        fishGroup.children.forEach((fish, i) => {
             if (fish.initialPosition === undefined) {
                 fish.initialPosition = fish.position.clone();
                 fish.initialRotation = fish.rotation.clone();
             }
 
-            fish.rotation.x = fish.initialRotation.x + Math.cos(time2 * 0.25) * 0.2;
-            fish.rotation.z = fish.initialRotation.z + Math.sin(time2 * 0.6) * 2 * 0.05;
-            fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 0.25) * (-0.1); 
-            time2 += 0.005;
+            // Rocking animation
+            fish.rotation.x = fish.initialRotation.x + Math.cos(time2 * 0.25 + i) * 0.2;
+            fish.rotation.z = fish.initialRotation.z + Math.sin(time2 * 0.6 + i) * 2 * 0.05;
+            fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 0.05 + i) * (-0.01); 
+
+            // Circular movement
+            const radius = 5 + i * 2; // Different radius for each fish
+            const speed = 0.5 + i * 0.1; // Slightly different speed for each fish
+
+            // Previous position for direction calculation
+            if (!fish.prevCircularPos) {
+                fish.prevCircularPos = new THREE.Vector3(
+                    fish.initialPosition.x + Math.cos(time2 * speed + i) * radius,
+                    fish.position.y,
+                    fish.initialPosition.z + Math.sin(time2 * speed + i) * radius
+                );
+            }
+
+            // Calculate new position
+            const newX = fish.initialPosition.x + Math.cos(time2 * speed + i) * radius;
+            const newZ = fish.initialPosition.z + Math.sin(time2 * speed + i) * radius;
+
+            // Set position
+            fish.position.x = newX;
+            fish.position.z = newZ;
+
+            // Calculate direction vector
+            const dir = new THREE.Vector3(
+                newX - fish.prevCircularPos.x,
+                0,
+                newZ - fish.prevCircularPos.z
+            );
+            if (dir.lengthSq() > 0.0001) {
+                dir.normalize();
+                // Fish model faces +Z by default; adjust if needed
+                const angle = Math.atan2(dir.x, dir.z);
+                fish.rotation.y = angle;
+            }
+
+            // Store current position for next frame
+            fish.prevCircularPos.set(newX, fish.position.y, newZ);
+
+            time2 += 0.001;
         });
     }
 
@@ -269,7 +313,7 @@ export function updateCamera(group) {
         }
 
         // 🚨 Replace orbit controls with directional camera logic
-        const cameraOffset = new THREE.Vector3(0, 27, -70); // Above and behind the boat
+        const cameraOffset = new THREE.Vector3(0, 20, -60); // Above and behind the boat
         const boatDirection = new THREE.Vector3();
         group.getWorldDirection(boatDirection);
         boatDirection.y = 0;
@@ -287,4 +331,4 @@ export function updateCamera(group) {
 }
 
 
-export { selectedDifficulty };
+export { selectedDifficulty, isFixedCamera };

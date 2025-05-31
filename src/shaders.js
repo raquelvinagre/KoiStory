@@ -47,7 +47,7 @@ function createWaterMesh() {
         }
 
         void main() {
-            vec4 color = vec4(0.0, 0.7, 1.0, 0.45);
+            vec4 color = vec4(0.0, 0.7, 1.0, 0.40);
 
             vec2 pos = vUV * 2.0;
             pos.y -= uTime * 0.002;
