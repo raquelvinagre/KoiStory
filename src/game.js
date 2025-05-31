@@ -130,6 +130,38 @@ function createHitPads() {
     hitPadsGroup.add(pad);
     hitPads.push(pad);
   });
+
+  addPadLabels();
+}
+
+function addPadLabels() {
+ const container = document.createElement('div');
+  container.id = 'htmlHitPads';
+  container.style.position = 'absolute';
+  container.style.bottom = '40px';
+  container.style.left = '50%';
+  container.style.transform = 'translateX(-50%)';
+  container.style.display = 'flex';
+  container.style.gap = '20px';
+  container.style.zIndex = '100';
+  document.body.appendChild(container);
+
+  laneData.forEach(({ key, color }) => {
+    const pad = document.createElement('div');
+    pad.className = 'html-hit-pad';
+    pad.style.width = '60px';
+    pad.style.height = '60px';
+    pad.style.backgroundColor = `#${color.toString(16).padStart(6, '0')}`;
+    pad.style.borderRadius = '10px';
+    pad.style.display = 'flex';
+    pad.style.alignItems = 'center';
+    pad.style.justifyContent = 'center';
+    pad.style.fontSize = '24px';
+    pad.style.fontWeight = 'bold';
+    pad.style.color = 'white';
+    pad.innerText = key.toUpperCase();
+    container.appendChild(pad);
+  });
 }
 
 function animateHitPad(laneIndex) {
@@ -399,6 +431,11 @@ function stopGame() {
   heldKeys.clear();
   document.removeEventListener('keydown', handleKeyPress);
   document.removeEventListener('keyup', handleKeyUp);
+
+  const htmlPadContainer = document.getElementById('htmlHitPads');
+  if (htmlPadContainer) {
+    htmlPadContainer.remove();
+  }
 
   leaderboard.push(score);
   leaderboard.sort((a, b) => b - a);

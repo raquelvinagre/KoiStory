@@ -6,8 +6,8 @@ import { moveBoat } from "./movement.js";
 import { updateWater } from "./shaders.js";
 import { updateNotes } from "./game.js";
 
-//const stats = new Stats();
-//document.body.appendChild(stats.dom);
+// const stats = new Stats();
+// document.body.appendChild(stats.dom);
 
 // Title screen container with transparent background
 const titleScreen = document.createElement('div');
@@ -69,7 +69,7 @@ startButton.onmouseleave = () => startButton.style.backgroundColor = 'rgba(255, 
 titleScreen.appendChild(startButton);
 
 const instructions = document.createElement('p');
-instructions.textContent = 'Use the A,W,S,D keys to control the boat, and the mouse to rotate the camera.';
+instructions.textContent = 'Use the A,W,S,D keys to control the boat.';
 instructions.style.color = 'white';
 instructions.style.fontSize = '20px';
 instructions.style.marginTop = '10px';
@@ -109,7 +109,7 @@ function animate() {
   updateWater(time);
   updateNotes();  
 
-  //stats.update();
+  stats.update();
 
   const groupPosition = group.position;
   infoDiv.innerHTML = `Boat Position: X: ${groupPosition.x.toFixed(2)} Y: ${groupPosition.y.toFixed(2)} Z: ${groupPosition.z.toFixed(2)}`;

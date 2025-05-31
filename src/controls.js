@@ -16,11 +16,12 @@ let countdownText;
 let selectedDifficulty = 'hard'; // default
 
 // Button to toggle between fixed and follow camera
-const button = document.createElement("button");
-button.textContent = "Start Playing";
+const button = document.createElement("div");
+button.innerHTML = "<strong>Hit Space to Start Playing</strong>";
+button.style.color = "white";
 button.style.position = "absolute";
-button.style.top = "10%";
-button.style.left = "5%";
+button.style.bottom = "20%";
+button.style.left = "50%";
 button.style.transform = "translate(-50%, 50%)";
 document.body.appendChild(button);
 button.style.display = "none";
@@ -35,16 +36,19 @@ export function initializeControls(sceneInstance) {
     camera.position.set(0, 30, 60);
     cameraPivot.add(camera);  
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.1;
+    // const controls = new OrbitControls(camera, renderer.domElement);
+    // controls.enableDamping = true;
+    // controls.dampingFactor = 0.1;
 
-    button.addEventListener("click", () => {
-        isFixedCamera = !isFixedCamera;
-        button.textContent = isFixedCamera ? "Switch to Free Mode" : "Start Playing";
+    window.addEventListener("keydown", (event) => {
+        if (event.code === "Space" && button.style.display === "block") {
+            isFixedCamera = !isFixedCamera;
+            button.innerHTML = isFixedCamera ? "<strong>Hit Space to Leave</strong>" : "<strong>Hit Space to Start Playing</strong>";
+            titleScreen.style.display = 'none';
+        }
     });
 
-    return { cameraPivot, fixedCamera, controls, isFixedCamera };
+    return { cameraPivot, fixedCamera, isFixedCamera };
 }
 
 function highlightSelectedDifficulty(container, selectedBtn) {
@@ -121,6 +125,13 @@ function createTitleScreen() {
             titleScreen.style.display = 'none';
             runCountdown();
         });
+        // window.addEventListener('keydown', (event) => {
+        // if (event.code === 'Space' && titleScreen.style.display !== 'none') {
+        //     titleScreen.style.display = 'none';
+        //     runCountdown();
+        // }
+        // });
+
     } else {
         titleScreen.style.display = 'flex';
     }
@@ -158,34 +169,53 @@ function startGameWithDifficulty(difficulty) {
 }
 
 
+let countdownInterval = null;
+let countdownStopped = false;
+
 function runCountdown() {
     createCountdownText();
     let count = 3;
+    countdownStopped = false;
     countdownText.innerText = count;
 
-    const countdownInterval = setInterval(() => {
+    // Listen for space to stop countdown
+    function onSpaceDown(event) {
+        if (event.code === "Space") {
+            countdownStopped = true;
+            clearInterval(countdownInterval);
+            countdownText.innerText = '';
+            window.removeEventListener("keydown", onSpaceDown);
+        }
+    }
+    window.addEventListener("keydown", onSpaceDown);
+
+    countdownInterval = setInterval(() => {
+        if (countdownStopped) {
+            clearInterval(countdownInterval);
+            return;
+        }
         count--;
         if (count === 0) {
             countdownText.innerText = 'GO!';
         } else if (count < 0) {
             clearInterval(countdownInterval);
             countdownText.innerText = '';
-        
+            window.removeEventListener("keydown", onSpaceDown);
             startGameWithDifficulty(selectedDifficulty);
-        
         } else {
             countdownText.innerText = count;
         }
     }, 1000);
 }
 
-export function updateCamera(group, controls) {
+export function updateCamera(group) {
     if (!group) return;
 
     const minX = -200, maxX = 200;
     const minY = -50, maxY = 50;
     const minZ = -200, maxZ = 200;
 
+    // Boat rocking logic
     if (group.initialPosition === undefined) {
         group.initialPosition = group.position.clone();
         group.initialRotation = group.rotation.clone();
@@ -196,6 +226,7 @@ export function updateCamera(group, controls) {
     group.rotation.z = group.initialRotation.z + Math.sin(time * 0.5) * 2 * 0.02;
     time += 0.1;
 
+    // Fish rocking logic
     if (fishGroup) {
         fishGroup.children.forEach((fish) => {
             if (fish.initialPosition === undefined) {
@@ -210,6 +241,7 @@ export function updateCamera(group, controls) {
         });
     }
 
+    // Show button if within boundaries
     const boatPosition = group.position;
     if (boatPosition.x >= minX && boatPosition.x <= maxX &&
         boatPosition.y >= minY && boatPosition.y <= maxY &&
@@ -228,7 +260,7 @@ export function updateCamera(group, controls) {
         group.position.set(0, 0, 0);
         group.rotation.y = 0;
 
-        updateFeedbacks(fixedCamera, renderer)
+        updateFeedbacks(fixedCamera, renderer);
         renderer.render(scene, fixedCamera);
     } else {
         if (lastCameraState !== false) {
@@ -236,12 +268,23 @@ export function updateCamera(group, controls) {
             lastCameraState = false;
         }
 
-        cameraPivot.position.copy(group.position);
-        controls.target.copy(group.position);
-        controls.update();
+        // 🚨 Replace orbit controls with directional camera logic
+        const cameraOffset = new THREE.Vector3(0, 27, -70); // Above and behind the boat
+        const boatDirection = new THREE.Vector3();
+        group.getWorldDirection(boatDirection);
+        boatDirection.y = 0;
+
+        const behindDirection = boatDirection.clone().multiplyScalar(-cameraOffset.z);
+        const finalCameraPos = group.position.clone()
+            .add(behindDirection)
+            .add(new THREE.Vector3(0, cameraOffset.y, 0));
+
+        camera.position.lerp(finalCameraPos, 0.1); // Smooth camera follow
+        camera.lookAt(group.position);
 
         renderer.render(scene, camera);
     }
 }
+
 
 export { selectedDifficulty };
