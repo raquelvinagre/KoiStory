@@ -4,6 +4,7 @@ import { RGBELoader } from "../node_modules/three/examples/jsm/loaders/RGBELoade
 import { createWater } from "./shaders.js";
 import { renderer } from "./scene.js";  
 
+
 function loadEnvironment() {
     // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     // scene.add(ambientLight);

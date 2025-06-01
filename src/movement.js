@@ -22,9 +22,14 @@ const maxTilt = 0.2; // radians (~11 degrees)
 const tiltSpeed = 0.05; // how fast the tilt happens
 let currentTilt = 0;
 
+// Add this near the top with other constants
+const GAME_AREA_RADIUS = 770;
+const CENTER = new THREE.Vector3(0, 0, 0);
+
 function moveBoat() {
     if (!group) return;
 
+    // Your existing movement code...
     const thrust = new THREE.Vector3();
     group.getWorldDirection(thrust);
     thrust.y = 0;
@@ -39,27 +44,44 @@ function moveBoat() {
     }
 
     let tilting = 0;
-
     if (keys.a) {
         angularVelocity.y += turnSpeed;
-        tilting = maxTilt; // Tilt left
+        tilting = maxTilt;
     }
     if (keys.d) {
         angularVelocity.y -= turnSpeed;
-        tilting = -maxTilt; // Tilt right
+        tilting = -maxTilt;
     }
-
-    // Smooth tilt transition
-    currentTilt += (tilting - currentTilt) * tiltSpeed;
-    group.rotation.z = currentTilt;
 
     // Apply damping
     velocity.multiplyScalar(drag);
     angularVelocity.y *= angularDrag;
 
-    // Apply movement
-    group.position.add(velocity);
+    // Calculate proposed new position
+    const newPosition = group.position.clone().add(velocity);
+
+    // Boundary check - distance from center
+    const distanceFromCenter = newPosition.distanceTo(CENTER);
+    
+    if (distanceFromCenter > GAME_AREA_RADIUS) {
+        // Calculate pushback direction (toward center)
+        const pushDirection = CENTER.clone().sub(group.position).normalize();
+        
+        // Apply pushback force (stronger when farther out)
+        const pushStrength = (distanceFromCenter - GAME_AREA_RADIUS) * 0.1;
+        velocity.add(pushDirection.multiplyScalar(pushStrength));
+        
+        // Also reduce current velocity
+        velocity.multiplyScalar(0.8);
+    } else {
+        // Only apply movement if within bounds
+        group.position.add(velocity);
+    }
+
+    // Apply rotation and tilt
     group.rotation.y += angularVelocity.y;
+    currentTilt += (tilting - currentTilt) * tiltSpeed;
+    group.rotation.z = currentTilt;
 }
 
 
