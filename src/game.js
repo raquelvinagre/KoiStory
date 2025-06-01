@@ -18,7 +18,8 @@ let notes = [];
 let frets = [];
 let hitPads = [];
 let noteSpawnTimeouts = [];
-let isRunning = false;
+let isRunning = false; //if the game is running
+let isPaused = false; //if we are in game mode and paused
 let score = 0;
 const heldKeys = new Set();
 const feedbacks = [];
@@ -107,13 +108,27 @@ if (!pauseOverlay) {
   pauseOverlay.style.textAlign = 'center';
   pauseOverlay.innerHTML = `
             <h1>Game Paused</h1>
-            <p>Press Escape to resume</p>
+            <p>Press [Esc] to resume</p>
         `;
           pauseOverlay.style.display = 'none';
 
 
   document.body.appendChild(pauseOverlay);
 }
+
+// document.addEventListener('keydown', (e) => {
+//   if (e.key === 'Escape') {
+//     if (!isRunning) return;
+
+//     if (!isPaused) {
+//       isPaused = true;
+//       pauseGame();
+//     } else {
+//       isPaused = false;
+//       resumeGame();
+//     }
+//   }
+// });
 
 
 function updateLeaderboard() {
@@ -310,7 +325,7 @@ function updateFishAnimation() {
 }
 
 function updateNotes() {
-  if (!isRunning) return;
+    if (!isRunning || isPaused) return;
 
   updateFishAnimation();
   for (let i = notes.length - 1; i >= 0; i--) {
@@ -346,8 +361,10 @@ function updateNotes() {
 }
 
 function handleKeyPress(event) {
-  if (!isRunning) return;
   const key = event.key.toLowerCase();
+
+  if (!isRunning) return; // Ignore key presses if not in game mode
+
   heldKeys.add(key);
 
   const laneIndex = laneData.findIndex(lane => lane.key === key);
@@ -446,32 +463,33 @@ function startGame(selectedDifficulty) {
   addFishGroup();
   document.addEventListener('keydown', handleKeyPress);
   document.addEventListener('keyup', handleKeyUp);
-  document.addEventListener('keydown', (e) => {
-  if (isFixedCamera){
-    if (e.key === 'Escape') {
-    if (isRunning) {
-      pauseGame();
-    } else {
-      resumeGame();
-    }
-  }
-  }
-});
+
 }
 
 function pauseGame() {
-  if (!isRunning) return;
-  isRunning = false;
+  if (!isRunning || isPaused) return;
+  isPaused = true;
   audio.pause();
   pauseOverlay.style.display = 'block';
 }
 
 function resumeGame() {
-  if (isRunning) return;
-  isRunning = true;
+  if (!isRunning || !isPaused) return;
+  isPaused = false;
   audio.play();
   pauseOverlay.style.display = 'none';
 }
+
+// ESC key handler
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isRunning) {
+    if (!isPaused) {
+      pauseGame();
+    } else {
+      resumeGame();
+    }
+  }
+});
 
 function stopGame() {
   scene.remove(scene.getObjectByName('linesGroup'));
@@ -503,4 +521,4 @@ function stopGame() {
   updateLeaderboard();
 }
 
-export { startGame, stopGame, updateNotes, updateFeedbacks };
+export { startGame, stopGame, updateNotes, updateFeedbacks, isPaused };

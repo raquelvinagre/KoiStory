@@ -17,7 +17,7 @@ let selectedDifficulty = 'medium'; // default
 
 // Button to toggle between fixed and follow camera
 const button = document.createElement("div");
-button.innerHTML = "<strong>Hit Space to start playing</strong>";
+button.innerHTML = "<strong>Hit [Space] to start playing</strong>";
 button.style.color = "white";
 button.style.position = "absolute";
 button.style.bottom = "18%";
@@ -29,6 +29,15 @@ button.style.zIndex = "100";
 button.style.transform = "translate(-50%, 50%)";
 document.body.appendChild(button);
 button.style.display = "none";
+
+const controls = document.createElement("div");
+controls.innerHTML = "<strong>Use [A, W, S, D] to control the boat</strong>";
+controls.style.position = "absolute";
+controls.style.bottom = "20px";
+controls.style.right = "30px";
+controls.style.color = "white";
+controls.style.zIndex = "9";
+document.body.appendChild(controls);
 
 export function initializeControls(sceneInstance) {
     cameraPivot = new THREE.Object3D();
@@ -47,7 +56,7 @@ export function initializeControls(sceneInstance) {
     window.addEventListener("keydown", (event) => {
         if (event.code === "Space" && button.style.display === "block") {
             isFixedCamera = !isFixedCamera;
-            button.innerHTML = isFixedCamera ? "<strong>Hit Space to leave</strong>" : "<strong>Hit Space to start playing</strong>";
+            button.innerHTML = isFixedCamera ? "<strong>Hit [Space] to leave</strong>" : "<strong>Hit [Space] to start playing</strong>";
             titleScreen.style.display = 'none';
         }
     });
@@ -60,7 +69,7 @@ function highlightSelectedDifficulty(container, selectedBtn) {
         btn.style.backgroundColor = '';
         btn.style.color = '';
     });
-    selectedBtn.style.backgroundColor = '#afd2dc';
+    selectedBtn.style.backgroundColor = 'rgba(91, 255, 239, 0.8)';
     selectedBtn.style.color = 'black';
 }
 
@@ -73,7 +82,7 @@ function createTitleScreen() {
         titleScreen.style.left = '0';
         titleScreen.style.width = '100%';
         titleScreen.style.height = '100%';
-        titleScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+        titleScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.65)';
         titleScreen.style.display = 'flex';
         titleScreen.style.flexDirection = 'column';
         titleScreen.style.justifyContent = 'center';
@@ -85,16 +94,31 @@ function createTitleScreen() {
             <h1>🎸 Koy Story is a rhythm based game!</h1>
             <p>Use headphones for a better experience.</p>
             <p>Hit the correct keys as notes cross the line!</p>
-            <p>Default difficulty is <strong>Medium</strong>.</p>
             <p>Place your fingers on the following keys: <strong>D F J K</strong></p>
         `;
 
+        const escapeText = document.createElement('p');
+        escapeText.innerHTML = '<strong>Press [Esc] to pause the game</strong>';
+        escapeText.style.position = 'absolute';
+        escapeText.style.bottom = '20px';
+        escapeText.style.left = '30px';
+        escapeText.style.margin = '0';
+        escapeText.style.fontSize = '16px';
+        titleScreen.appendChild(escapeText);
+
+        const difficultyLabel = document.createElement('p');
+        difficultyLabel.innerText = 'Select difficulty';
+        difficultyLabel.style.margin = '0 0 8px 0';
+        difficultyLabel.style.fontWeight = 'bold';
+        difficultyLabel.style.fontSize = '16px';
+
         const difficultyContainer = document.createElement('div');
         difficultyContainer.style.position = 'absolute';
-        difficultyContainer.style.top = '10px';
+        difficultyContainer.style.top = '30px';
         difficultyContainer.style.right = '10px';
         difficultyContainer.style.display = 'flex';
         difficultyContainer.style.gap = '10px';
+        difficultyContainer.style.flexDirection = 'row';
 
         ['Easy', 'Medium', 'Hard'].forEach(level => {
             const button = document.createElement('button');
@@ -103,6 +127,13 @@ function createTitleScreen() {
             button.style.fontSize = '14px';
             button.style.borderRadius = '5px';
             button.dataset.difficulty = level.toLowerCase();
+            button.style.cursor = 'pointer';
+
+            // Highlight Medium by default
+            if (level.toLowerCase() === 'medium') {
+                button.style.backgroundColor = 'rgba(91, 255, 239, 0.8)';
+                button.style.color = 'black';
+            }
 
             button.addEventListener('click', () => {
                 selectedDifficulty = button.dataset.difficulty;
@@ -112,12 +143,20 @@ function createTitleScreen() {
             difficultyContainer.appendChild(button);
         });
 
-        titleScreen.appendChild(difficultyContainer);
+        // Container for label and buttons
+        const difficultyWrapper = document.createElement('div');
+        difficultyWrapper.style.position = 'absolute';
+        difficultyWrapper.style.top = '10px';
+        difficultyWrapper.style.right = '10px';
+        difficultyWrapper.appendChild(difficultyLabel);
+        difficultyWrapper.appendChild(difficultyContainer);
+
+        titleScreen.appendChild(difficultyWrapper);
 
 
         const startButton = document.createElement('button');
         startButton.id = 'startButton';
-        startButton.innerText = 'I´m Ready to rock';
+        startButton.innerText = 'I´m ready to rock';
         startButton.style.padding = '10px 20px';
         startButton.style.fontSize = '18px';
         startButton.style.marginTop = '20px';
@@ -130,12 +169,6 @@ function createTitleScreen() {
             titleScreen.style.display = 'none';
             runCountdown();
         });
-        // window.addEventListener('keydown', (event) => {
-        // if (event.code === 'Space' && titleScreen.style.display !== 'none') {
-        //     titleScreen.style.display = 'none';
-        //     runCountdown();
-        // }
-        // });
 
     } else {
         titleScreen.style.display = 'flex';
@@ -312,8 +345,7 @@ export function updateCamera(group) {
             lastCameraState = false;
         }
 
-        // 🚨 Replace orbit controls with directional camera logic
-        const cameraOffset = new THREE.Vector3(0, 20, -60); // Above and behind the boat
+        const cameraOffset = new THREE.Vector3(0, 24, -60); // Above and behind the boat
         const boatDirection = new THREE.Vector3();
         group.getWorldDirection(boatDirection);
         boatDirection.y = 0;

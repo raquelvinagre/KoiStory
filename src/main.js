@@ -71,17 +71,17 @@ titleScreen.appendChild(startButton);
 const instructions = document.createElement('p');
 instructions.textContent = 'Use the A,W,S,D keys to control the boat.';
 instructions.style.color = 'white';
+instructions.style.fontWeight = 'bold';
 instructions.style.fontSize = '20px';
 instructions.style.marginTop = '10px';
 instructions.style.textAlign = 'center';
 instructions.style.maxWidth = '600px';
 instructions.style.lineHeight = '1.5';
-instructions.style.opacity = '0.8';
 instructions.style.transition = 'opacity 0.3s';
 instructions.onmouseenter = () => instructions.style.opacity = '1';
 instructions.onmouseleave = () => instructions.style.opacity = '0.8'; 
 
-titleScreen.appendChild(instructions);
+// titleScreen.appendChild(instructions);
 
 document.body.appendChild(titleScreen);
 
