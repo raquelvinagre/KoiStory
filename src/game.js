@@ -107,29 +107,31 @@ if (!pauseOverlay) {
   pauseOverlay.style.color = 'white';
   pauseOverlay.style.textAlign = 'center';
   pauseOverlay.innerHTML = `
-            <h1>Game Paused</h1>
-            <p>Press [Esc] to resume</p>
-        `;
-          pauseOverlay.style.display = 'none';
-
-
+    <h1>Game Paused</h1>
+    <p>Press [Esc] to resume</p>
+    <div style="margin-top:20px;">
+      <label for="volumeSlider">Volume:</label>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.2" style="width:200px;">
+    </div>
+  `;
+  pauseOverlay.style.display = 'none';
   document.body.appendChild(pauseOverlay);
+
+  // Volume slider logic
+  const volumeSlider = pauseOverlay.querySelector('#volumeSlider');
+  if (volumeSlider) {
+    volumeSlider.value = audio.volume;
+    volumeSlider.addEventListener('input', (e) => {
+      audio.volume = parseFloat(e.target.value);
+    });
+  }
 }
 
-// document.addEventListener('keydown', (e) => {
-//   if (e.key === 'Escape') {
-//     if (!isRunning) return;
-
-//     if (!isPaused) {
-//       isPaused = true;
-//       pauseGame();
-//     } else {
-//       isPaused = false;
-//       resumeGame();
-//     }
-//   }
-// });
-
+ window.addEventListener("keydown", (event) => {
+     if (event.code === "Space") {
+         pauseOverlay.style.display = 'none';
+     }
+ });
 
 function updateLeaderboard() {
   leaderboardDiv.innerHTML = '<strong>Leaderboard:</strong><br>' + leaderboard
@@ -440,6 +442,7 @@ function loadNoteMapAndStart(selectedDifficulty) {
 
       audio.src = audioPath;
       audio.currentTime = 0;
+      audio.volume = 0.4;
       audio.play();
     })
     .catch(err => console.error("Error loading note map:", err));

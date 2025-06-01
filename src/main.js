@@ -89,6 +89,12 @@ startButton.addEventListener('click', () => {
   titleScreen.style.display = 'none';
 });
 
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && titleScreen.style.display !== 'none') {
+    titleScreen.style.display = 'none';
+  }
+});
+
 // Display coordinates
 const infoDiv = document.createElement('div');
 infoDiv.style.position = 'absolute';

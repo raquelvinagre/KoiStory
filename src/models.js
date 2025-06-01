@@ -105,10 +105,10 @@ function loadModels() {
     loadModel("models/sakura.glb", [-500, -40, -500], [100, 100, 100]);
     loadModel("models/sakura.glb", [-545, -40, 520], [100, 100, 100]);
 
-    loadModel("models/flower.glb", [50, -1, 300], [150, 150, 150]);
-    loadModel("models/flower.glb", [0, -1, -250], [150, 150, 150]);
-    loadModel("models/flower.glb", [450, -1, 0], [150, 150, 150]);
-    loadModel("models/flower.glb", [-350, -1, 0], [150, 150, 150]);
+    loadModel("models/flower.glb", [50, -25, 300], [150, 150, 150]);
+    loadModel("models/flower.glb", [0, -25, -250], [150, 150, 150]);
+    loadModel("models/flower.glb", [450, -25, 0], [150, 150, 150]);
+    loadModel("models/flower.glb", [-350, -25, 0], [150, 150, 150]);
 
     createMultipleInstances("models/cattail.glb", 15, 700, [30, 30, 30]);
     createMultipleInstances("models/rock.glb", 10, 600, [20, 20, 20]);
