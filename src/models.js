@@ -39,6 +39,28 @@ function loadFish(path, position, scale, parent = scene) { //the fish from the c
     }, undefined, (error) => console.error(`Error loading ${path}:`, error));
 }
 
+function loadBridge(path, position, scale, parent = scene) { //the fish from the concert need to be rotated
+    loader.load(path, (gltf) => {
+        const model = gltf.scene;
+        model.position.set(...position);
+        model.scale.set(...scale);
+        model.rotation.y = Math.PI; 
+        enableShadowCasting(model);
+        parent.add(model);
+    }, undefined, (error) => console.error(`Error loading ${path}:`, error));
+}
+
+function loadDock(path, position, scale, parent = scene) { //the fish from the concert need to be rotated
+    loader.load(path, (gltf) => {
+        const model = gltf.scene;
+        model.position.set(...position);
+        model.scale.set(...scale);
+        model.rotation.y = Math.PI; 
+        enableShadowCasting(model);
+        parent.add(model);
+    }, undefined, (error) => console.error(`Error loading ${path}:`, error));
+}
+
 
 function createMultipleInstances(path, count, radius, scale, parent = scene) {
     loader.load(path, (gltf) => {
@@ -47,7 +69,7 @@ function createMultipleInstances(path, count, radius, scale, parent = scene) {
             const angle = (i / count) * Math.PI * 2;
             instance.position.set(
                 radius * Math.cos(angle),
-                -20,
+                -30,
                 radius * Math.sin(angle)
             );
             instance.scale.set(...scale);
@@ -69,10 +91,14 @@ function loadModels() {
         group.add(model);
     }, undefined, (error) => console.error('Error loading models/ukelele.glb:', error));
 
-    loadModel("models/lilypad2.glb", [-200, 0, 0], [25, 25, 25]);
-    loadModel("models/lilypad2.glb", [350, 0, 0], [25, 25, 25]);
-    loadModel("models/lilypad2.glb", [-250, 0, 300], [25, 25, 25]);
-    loadModel("models/lilypad2.glb", [200, 0, -250], [25, 25, 25]);
+    loadBridge("models/bridge.glb", [-480, 15, -175], [150, 150, 150]);
+
+    loadDock("models/dock.glb", [470, 5, 275], [30, 30, 30]);
+ 
+    loadModel("models/lilypad2.glb", [-200, 0, 0], [10, 10, 10]);
+    loadModel("models/lilypad2.glb", [350, 0, 0], [10, 10, 10]);
+    loadModel("models/lilypad2.glb", [-250, 0, 300], [10, 10, 10]);
+    loadModel("models/lilypad2.glb", [200, 0, -250], [10, 10, 10]);
 
     loadModel("models/koi.glb", [-100, -10, 0], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [150, -4, 50], [50, 50, 50], fishGroup);
@@ -86,32 +112,25 @@ function loadModels() {
     loadModel("models/koi.glb", [-330, -10, 120], [0.05, 0.05, 0.05], fishGroup);
     loadModel("models/koi2.glb", [-70, -7, 350], [50, 50, 50], fishGroup);
 
-    //loadFish("models/koi.glb", [-40, -2, 80], [0.05, 0.05, 0.05], fishGroup2);
     loadFish("models/koi2.glb", [-60, -2, 80], [50, 50, 50], fishGroup2);
     loadFish("models/koi2.glb", [30, -2, 50], [50, 50, 50], fishGroup2);
     loadFish("models/koi2.glb", [-40, -2, 60], [50, 50, 50], fishGroup2);
-    //loadFish("models/koi.glb", [80, -2, 110], [0.05, 0.05, 0.05], fishGroup2);
     loadFish("models/koi2.glb", [50, -2, 110], [50, 50, 50], fishGroup2);
     loadFish("models/koi2.glb", [-30, -2, 90], [50, 50, 50], fishGroup2);
     loadFish("models/koi2.glb", [60, -2, 80], [50, 50, 50], fishGroup2);
     
     loadModel("models/gate.glb", [10, -30, -75], [15, 15, 15]);
 
-    loadModel("models/rock.glb", [-400, -30, 300], [20, 20, 20]);
-    loadModel("models/rock.glb", [600, -30, -100], [20, 20, 20]);
-    loadModel("models/rock.glb", [-400, -30, -100], [20, 20, 20]);
-
     loadModel("models/sakura.glb", [730, -40, -70], [100, 100, 100]);
     loadModel("models/sakura.glb", [-500, -40, -500], [100, 100, 100]);
     loadModel("models/sakura.glb", [-545, -40, 520], [100, 100, 100]);
 
-    loadModel("models/flower.glb", [50, -25, 300], [150, 150, 150]);
-    loadModel("models/flower.glb", [0, -25, -250], [150, 150, 150]);
-    loadModel("models/flower.glb", [450, -25, 0], [150, 150, 150]);
-    loadModel("models/flower.glb", [-350, -25, 0], [150, 150, 150]);
+    loadModel("models/flower.glb", [0, -25, -250], [200, 200, 200]);
+    loadModel("models/flower.glb", [450, -25, 0], [200, 200, 200]);
+    loadModel("models/flower.glb", [-350, -25, 0], [200, 200, 200]);
 
     createMultipleInstances("models/cattail.glb", 15, 700, [30, 30, 30]);
-    createMultipleInstances("models/rock.glb", 10, 600, [20, 20, 20]);
+    createMultipleInstances("models/plant.glb", 8, 600, [50, 50, 50]);
 
 }
 

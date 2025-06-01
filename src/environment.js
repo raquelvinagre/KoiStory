@@ -49,7 +49,7 @@ function loadEnvironment() {
     scene.add(ground);
 
     const geometry = new THREE.TorusGeometry(800, 20, 20, 100);
-    const torusTexture = new THREE.TextureLoader().load('textures/stone.jpg');
+    const torusTexture = new THREE.TextureLoader().load('textures/stacked-stones.jpg');
     torusTexture.wrapS = THREE.RepeatWrapping;
     torusTexture.wrapT = THREE.RepeatWrapping;
     torusTexture.repeat.set(8, 2);
@@ -88,6 +88,7 @@ function loadEnvironment() {
     }, undefined, function (error) {
         console.error('Error loading HDR texture:', error);
     });
+    
 }
 
 export { loadEnvironment };

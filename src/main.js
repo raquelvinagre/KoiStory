@@ -6,8 +6,8 @@ import { moveBoat } from "./movement.js";
 import { updateWater } from "./shaders.js";
 import { updateNotes } from "./game.js";
 
-// const stats = new Stats();
-// document.body.appendChild(stats.dom);
+const stats = new Stats();
+document.body.appendChild(stats.dom);
 
 // Title screen container with transparent background
 const titleScreen = document.createElement('div');
@@ -114,10 +114,10 @@ function animate() {
   updateWater(time);
   updateNotes();  
 
-  // stats.update();
+  stats.update();
 
-  // const groupPosition = group.position;
-  // infoDiv.innerHTML = `Boat Position: X: ${groupPosition.x.toFixed(2)} Y: ${groupPosition.y.toFixed(2)} Z: ${groupPosition.z.toFixed(2)}`;
+  const groupPosition = group.position;
+  infoDiv.innerHTML = `Boat Position: X: ${groupPosition.x.toFixed(2)} Y: ${groupPosition.y.toFixed(2)} Z: ${groupPosition.z.toFixed(2)}`;
 }
 
 function onWindowResize() {

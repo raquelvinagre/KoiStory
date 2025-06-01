@@ -15,6 +15,15 @@ let titleScreen;
 let countdownText;
 let selectedDifficulty = 'medium'; // default
 
+const DOCK_AREA = {
+    minX: 300,
+    maxX: 530,
+    minZ: 100,
+    maxZ: 350,
+    minY: -10,
+    maxY: 10
+};
+
 // Button to toggle between fixed and follow camera
 const button = document.createElement("div");
 button.innerHTML = "<strong>Hit [Space] to start playing</strong>";
@@ -22,13 +31,28 @@ button.style.color = "white";
 button.style.position = "absolute";
 button.style.bottom = "18%";
 button.style.left = "50%";
-button.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+button.style.backgroundColor = 'rgba(14, 12, 97, 0.4)';
 button.style.padding = "10px 20px";
 button.style.borderRadius = "10px";
 button.style.zIndex = "100";
 button.style.transform = "translate(-50%, 50%)";
 document.body.appendChild(button);
 button.style.display = "none";
+
+// Show button when the boat is in the dock area
+const dockButton = document.createElement("div");
+dockButton.innerHTML = "<strong>Press [E] to change boat</strong>";
+dockButton.style.color = "white";
+dockButton.style.position = "absolute";
+dockButton.style.bottom = "25%"; // Positioned higher than the space button
+dockButton.style.left = "50%";
+dockButton.style.backgroundColor = 'rgba(14, 12, 97, 0.4)';
+dockButton.style.padding = "10px 20px";
+dockButton.style.borderRadius = "10px";
+dockButton.style.zIndex = "100";
+dockButton.style.transform = "translate(-50%, 50%)";
+dockButton.style.display = "none";
+document.body.appendChild(dockButton);
 
 const controls = document.createElement("div");
 controls.innerHTML = "<strong>Use [A, W, S, D] to control the boat</strong>";
@@ -49,6 +73,34 @@ function updateControlsVisibility() {
 window.addEventListener("keydown", (event) => {
     if (event.code === "Space" && button.style.display === "block") {
         setTimeout(updateControlsVisibility, 0); // update after camera mode changes
+    }
+});
+
+// Add this with your other event listeners
+window.addEventListener("keydown", (event) => {
+    if (event.code === "KeyE" && dockButton.style.display === "block") {
+        // Handle dock interaction
+        console.log("Docking the boat!");
+        // You could trigger a docking animation, mini-game, or scene transition here
+        
+        // Example: Show a docked message
+        const dockedMessage = document.createElement("div");
+        dockedMessage.innerHTML = "<strong>Docked successfully!</strong>";
+        dockedMessage.style.position = "absolute";
+        dockedMessage.style.top = "50%";
+        dockedMessage.style.left = "50%";
+        dockedMessage.style.transform = "translate(-50%, -50%)";
+        dockedMessage.style.color = "white";
+        dockedMessage.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+        dockedMessage.style.padding = "20px";
+        dockedMessage.style.borderRadius = "10px";
+        dockedMessage.style.zIndex = "100";
+        document.body.appendChild(dockedMessage);
+        
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            dockedMessage.remove();
+        }, 3000);
     }
 });
 
@@ -344,6 +396,29 @@ export function updateCamera(group) {
     } else {
         button.style.display = "none";
     }
+
+    // Show dock button if within dock boundaries
+    const inDockArea = (
+        boatPosition.x >= DOCK_AREA.minX && 
+        boatPosition.x <= DOCK_AREA.maxX &&
+        boatPosition.z >= DOCK_AREA.minZ && 
+        boatPosition.z <= DOCK_AREA.maxZ &&
+        boatPosition.y >= DOCK_AREA.minY && 
+        boatPosition.y <= DOCK_AREA.maxY
+    );
+
+    dockButton.style.display = inDockArea ? "block" : "none";
+
+    // Show regular button if within regular boundaries
+    const inRegularArea = (
+        boatPosition.x >= minX && 
+        boatPosition.x <= maxX &&
+        boatPosition.z >= minZ && 
+        boatPosition.z <= maxZ &&
+        boatPosition.y >= minY && 
+        boatPosition.y <= maxY
+    );
+    button.style.display = inRegularArea ? "block" : "none";
 
     if (isFixedCamera) {
         if (lastCameraState !== true) {
