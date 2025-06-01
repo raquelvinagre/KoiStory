@@ -37,7 +37,23 @@ controls.style.bottom = "20px";
 controls.style.right = "30px";
 controls.style.color = "white";
 controls.style.zIndex = "9";
+controls.style.display = "none";
 document.body.appendChild(controls);
+
+// Show/hide controls depending on camera mode
+function updateControlsVisibility() {
+    controls.style.display = isFixedCamera ? "none" : "block";
+}
+
+// Call on camera toggle
+window.addEventListener("keydown", (event) => {
+    if (event.code === "Space" && button.style.display === "block") {
+        setTimeout(updateControlsVisibility, 0); // update after camera mode changes
+    }
+});
+
+// Also update on load
+updateControlsVisibility();
 
 export function initializeControls(sceneInstance) {
     cameraPivot = new THREE.Object3D();
