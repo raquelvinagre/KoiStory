@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { camera, renderer, scene } from "./scene.js"; 
-import { startGame, stopGame, updateFeedbacks } from "./game.js";
+import { bgMusic, startGame, stopGame, updateFeedbacks } from "./game.js";
 import { fishGroup } from "./models.js";    
 
 let cameraPivot;  
@@ -227,6 +227,7 @@ let countdownInterval = null;
 let countdownStopped = false;
 
 function runCountdown() {
+    bgMusic.pause();
     createCountdownText();
     let count = 3;
     countdownStopped = false;

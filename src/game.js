@@ -44,6 +44,48 @@ if (!audio) {
   document.body.appendChild(audio);
 }
 
+let bgMusic = document.getElementById('bgMusic');
+if (!bgMusic) {
+  bgMusic = document.createElement('audio');
+  bgMusic.id = 'bgMusic';
+  bgMusic.preload = 'auto';
+  bgMusic.style.display = 'none';
+  document.body.appendChild(bgMusic);
+}
+
+bgMusic.src = 'music/bg_music.mp3';
+bgMusic.volume = 0.2;
+bgMusic.loop = true;
+
+function startBackgroundMusic() {
+  if (bgMusic.paused) {
+    bgMusic.play()
+       .then(() => console.log("Game music started"))
+      .catch(err => console.error("Music playback error:", err));
+  }
+}
+
+startBackgroundMusic();
+
+// // Optional: Add a mute toggle button
+// const muteButton = document.createElement('button');
+// muteButton.textContent = '🔊';
+// muteButton.style.position = 'absolute';
+// muteButton.style.top = '10px';
+// muteButton.style.right = '10px';
+// muteButton.style.color = 'white';
+// muteButton.style.fontWeight = 'bold';
+// muteButton.style.backgroundColor = 'rgba(0, 14, 39, 0.7)';
+// muteButton.style.borderRadius = '10px';
+// muteButton.style.padding = '5px';
+// muteButton.style.zIndex = '11';
+// document.body.appendChild(muteButton);
+
+// muteButton.addEventListener('click', () => {
+//   bgMusic.muted = !bgMusic.muted;
+//   muteButton.textContent = bgMusic.muted ? '🔇' : '🔊';
+// });
+
 // UI setup
 let gameStatusText = document.getElementById('gameStatusText');
 if (!gameStatusText) {
@@ -327,7 +369,7 @@ function updateFishAnimation() {
 }
 
 function updateNotes() {
-    if (!isRunning || isPaused) return;
+  if (!isRunning || isPaused) return;
 
   updateFishAnimation();
   for (let i = notes.length - 1; i >= 0; i--) {
@@ -456,6 +498,7 @@ function removeFishGroup() {
 
 function startGame(selectedDifficulty) {
   if (isRunning) return;
+  bgMusic.pause();
   isRunning = true;
   score = 0;
   scoreText.innerHTML = `Score: ${score}`;
@@ -499,6 +542,7 @@ function stopGame() {
   removeFishGroup();
   isRunning = false;
   audio.pause();
+  bgMusic.play();
   audio.currentTime = 0;
   noteSpawnTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
   noteSpawnTimeouts = [];
@@ -524,4 +568,4 @@ function stopGame() {
   updateLeaderboard();
 }
 
-export { startGame, stopGame, updateNotes, updateFeedbacks, isPaused };
+export { startGame, stopGame, updateNotes, updateFeedbacks, isPaused, bgMusic };

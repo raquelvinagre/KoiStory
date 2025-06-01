@@ -21,7 +21,7 @@ titleScreen.style.display = 'flex';
 titleScreen.style.flexDirection = 'column';
 titleScreen.style.justifyContent = 'center';
 titleScreen.style.alignItems = 'center';
-titleScreen.style.zIndex = '999';
+titleScreen.style.zIndex = '101';
 
 // Title container with logo and title side by side
 const titleContainer = document.createElement('div');
@@ -69,9 +69,8 @@ startButton.onmouseleave = () => startButton.style.backgroundColor = 'rgba(255, 
 titleScreen.appendChild(startButton);
 
 const instructions = document.createElement('p');
-instructions.textContent = 'Use the A,W,S,D keys to control the boat.';
+instructions.textContent = 'Use headphones for a better experience.';
 instructions.style.color = 'white';
-instructions.style.fontWeight = 'bold';
 instructions.style.fontSize = '20px';
 instructions.style.marginTop = '10px';
 instructions.style.textAlign = 'center';
@@ -81,7 +80,7 @@ instructions.style.transition = 'opacity 0.3s';
 instructions.onmouseenter = () => instructions.style.opacity = '1';
 instructions.onmouseleave = () => instructions.style.opacity = '0.8'; 
 
-// titleScreen.appendChild(instructions);
+titleScreen.appendChild(instructions);
 
 document.body.appendChild(titleScreen);
 
