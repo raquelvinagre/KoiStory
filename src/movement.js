@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { group } from "./models.js";
+import { currentBoatGroup } from "./models.js";
 
 const moveSpeed = 0.08;
 const turnSpeed = 0.003;
@@ -27,11 +27,11 @@ const GAME_AREA_RADIUS = 770;
 const CENTER = new THREE.Vector3(0, 0, 0);
 
 function moveBoat() {
-    if (!group) return;
+    if (!currentBoatGroup) return;
 
     // Your existing movement code...
     const thrust = new THREE.Vector3();
-    group.getWorldDirection(thrust);
+    currentBoatGroup.getWorldDirection(thrust);
     thrust.y = 0;
 
     if (keys.w) {
@@ -58,14 +58,14 @@ function moveBoat() {
     angularVelocity.y *= angularDrag;
 
     // Calculate proposed new position
-    const newPosition = group.position.clone().add(velocity);
+    const newPosition = currentBoatGroup.position.clone().add(velocity);
 
     // Boundary check - distance from center
     const distanceFromCenter = newPosition.distanceTo(CENTER);
     
     if (distanceFromCenter > GAME_AREA_RADIUS) {
         // Calculate pushback direction (toward center)
-        const pushDirection = CENTER.clone().sub(group.position).normalize();
+        const pushDirection = CENTER.clone().sub(currentBoatGroup.position).normalize();
         
         // Apply pushback force (stronger when farther out)
         const pushStrength = (distanceFromCenter - GAME_AREA_RADIUS) * 0.1;
@@ -75,13 +75,13 @@ function moveBoat() {
         velocity.multiplyScalar(0.8);
     } else {
         // Only apply movement if within bounds
-        group.position.add(velocity);
+        currentBoatGroup.position.add(velocity);
     }
 
     // Apply rotation and tilt
-    group.rotation.y += angularVelocity.y;
+    currentBoatGroup.rotation.y += angularVelocity.y;
     currentTilt += (tilting - currentTilt) * tiltSpeed;
-    group.rotation.z = currentTilt;
+    currentBoatGroup.rotation.z = currentTilt;
 }
 
 

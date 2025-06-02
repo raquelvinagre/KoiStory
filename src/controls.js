@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { camera, renderer, scene } from "./scene.js"; 
 import { bgMusic, startGame, stopGame, updateFeedbacks } from "./game.js";
-import { fishGroup } from "./models.js";    
+import { fishGroup, swapBoatModel, boatModel1, boatModel2, currentBoatGroup } from "./models.js";    
 
 let cameraPivot;  
 let isFixedCamera = false;
@@ -14,6 +14,8 @@ let lastCameraState = null;
 let titleScreen;
 let countdownText;
 let selectedDifficulty = 'medium'; // default
+
+let isDocked = false;
 
 const DOCK_AREA = {
     minX: 300,
@@ -41,7 +43,7 @@ button.style.display = "none";
 
 // Show button when the boat is in the dock area
 const dockButton = document.createElement("div");
-dockButton.innerHTML = "<strong>Press [E] to change boat</strong>";
+dockButton.innerHTML = "<strong>Press [E] to visit Koi Store</strong>";
 dockButton.style.color = "white";
 dockButton.style.position = "absolute";
 dockButton.style.bottom = "25%"; // Positioned higher than the space button
@@ -76,31 +78,23 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-// Add this with your other event listeners
+const dockSound = new Audio('music/blob.mp3');
+
 window.addEventListener("keydown", (event) => {
     if (event.code === "KeyE" && dockButton.style.display === "block") {
-        // Handle dock interaction
-        console.log("Docking the boat!");
-        // You could trigger a docking animation, mini-game, or scene transition here
-        
-        // Example: Show a docked message
-        const dockedMessage = document.createElement("div");
-        dockedMessage.innerHTML = "<strong>Docked successfully!</strong>";
-        dockedMessage.style.position = "absolute";
-        dockedMessage.style.top = "50%";
-        dockedMessage.style.left = "50%";
-        dockedMessage.style.transform = "translate(-50%, -50%)";
-        dockedMessage.style.color = "white";
-        dockedMessage.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-        dockedMessage.style.padding = "20px";
-        dockedMessage.style.borderRadius = "10px";
-        dockedMessage.style.zIndex = "100";
-        document.body.appendChild(dockedMessage);
-        
-        // Remove message after 3 seconds
-        setTimeout(() => {
-            dockedMessage.remove();
-        }, 3000);
+        if (!isDocked) {
+            // Switch to docked boat model
+            swapBoatModel(true);
+
+            isDocked = true;
+            dockSound.play();
+        } else {
+            // Switch back to regular boat model
+            swapBoatModel(false);
+            isDocked = false;
+            dockSound.play();
+            dockButton.innerHTML = "<strong>Press [E] to visit Koi Store</strong>";
+        }
     }
 });
 
@@ -315,22 +309,22 @@ function runCountdown() {
     }, 1000);
 }
 
-export function updateCamera(group) {
-    if (!group) return;
+export function updateCamera(currentBoatGroup) {
+    if (!currentBoatGroup) return;
 
     const minX = -200, maxX = 200;
     const minY = -50, maxY = 50;
     const minZ = -200, maxZ = 200;
 
     // Boat rocking logic
-    if (group.initialPosition === undefined) {
-        group.initialPosition = group.position.clone();
-        group.initialRotation = group.rotation.clone();
+    if (currentBoatGroup.initialPosition === undefined) {
+        currentBoatGroup.initialPosition = currentBoatGroup.position.clone();
+        currentBoatGroup.initialRotation = currentBoatGroup.rotation.clone();
     }
 
-    group.position.y = group.initialPosition.y + Math.cos(time) * 0.1;
-    group.rotation.x = group.initialRotation.x + Math.cos(time * 0.25) * 0.02;
-    group.rotation.z = group.initialRotation.z + Math.sin(time * 0.5) * 2 * 0.02;
+    currentBoatGroup.position.y = currentBoatGroup.initialPosition.y + Math.cos(time) * 0.1;
+    currentBoatGroup.rotation.x = currentBoatGroup.initialRotation.x + Math.cos(time * 0.25) * 0.02;
+    currentBoatGroup.rotation.z = currentBoatGroup.initialRotation.z + Math.sin(time * 0.5) * 2 * 0.02;
     time += 0.1;
 
     // Fish rocking logic + circular movement
@@ -388,7 +382,7 @@ export function updateCamera(group) {
     }
 
     // Show button if within boundaries
-    const boatPosition = group.position;
+    const boatPosition = currentBoatGroup.position;
     if (boatPosition.x >= minX && boatPosition.x <= maxX &&
         boatPosition.y >= minY && boatPosition.y <= maxY &&
         boatPosition.z >= minZ && boatPosition.z <= maxZ) {
@@ -426,8 +420,8 @@ export function updateCamera(group) {
             lastCameraState = true;
         }
 
-        group.position.set(0, 0, 0);
-        group.rotation.y = 0;
+        currentBoatGroup.position.set(0, 0, 0);
+        currentBoatGroup.rotation.y = 0;
 
         updateFeedbacks(fixedCamera, renderer);
         renderer.render(scene, fixedCamera);
@@ -439,16 +433,16 @@ export function updateCamera(group) {
 
         const cameraOffset = new THREE.Vector3(0, 24, -60); // Above and behind the boat
         const boatDirection = new THREE.Vector3();
-        group.getWorldDirection(boatDirection);
+        currentBoatGroup.getWorldDirection(boatDirection);
         boatDirection.y = 0;
 
         const behindDirection = boatDirection.clone().multiplyScalar(-cameraOffset.z);
-        const finalCameraPos = group.position.clone()
+        const finalCameraPos = currentBoatGroup.position.clone()
             .add(behindDirection)
             .add(new THREE.Vector3(0, cameraOffset.y, 0));
 
         camera.position.lerp(finalCameraPos, 0.1); // Smooth camera follow
-        camera.lookAt(group.position);
+        camera.lookAt(currentBoatGroup.position);
 
         renderer.render(scene, camera);
     }
