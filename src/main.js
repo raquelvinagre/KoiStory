@@ -6,8 +6,8 @@ import { moveBoat } from "./movement.js";
 import { updateWater } from "./shaders.js";
 import { updateNotes } from "./game.js";
 
-const stats = new Stats();
-document.body.appendChild(stats.dom);
+// const stats = new Stats();
+// document.body.appendChild(stats.dom);
 
 const titleScreen = document.createElement('div');
 titleScreen.style.position = 'absolute';
@@ -93,12 +93,12 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Display coordinates
-const infoDiv = document.createElement('div');
-infoDiv.style.position = 'absolute';
-infoDiv.style.top = '80px';
-infoDiv.style.left = '10px';
-infoDiv.style.color = 'white';
-document.body.appendChild(infoDiv);
+// const infoDiv = document.createElement('div');
+// infoDiv.style.position = 'absolute';
+// infoDiv.style.top = '80px';
+// infoDiv.style.left = '10px';
+// infoDiv.style.color = 'white';
+// document.body.appendChild(infoDiv);
 
 let time = 0;
 
@@ -112,10 +112,10 @@ function animate() {
   updateWater(time);
   updateNotes();  
 
-  stats.update();
+  // stats.update();
 
-  const groupPosition = currentBoatGroup.position;
-  infoDiv.innerHTML = `Boat Position: X: ${groupPosition.x.toFixed(2)} Y: ${groupPosition.y.toFixed(2)} Z: ${groupPosition.z.toFixed(2)}`;
+  // const groupPosition = currentBoatGroup.position;
+  // infoDiv.innerHTML = `Boat Position: X: ${groupPosition.x.toFixed(2)} Y: ${groupPosition.y.toFixed(2)} Z: ${groupPosition.z.toFixed(2)}`;
 }
 
 function onWindowResize() {
