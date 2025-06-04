@@ -28,7 +28,7 @@ function loadEnvironment() {
 
     // const helper = new THREE.CameraHelper(light.shadow.camera);
     // scene.add(helper);
-
+        
     scene.renderer = renderer;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -57,7 +57,7 @@ function loadEnvironment() {
     const material = new THREE.MeshPhongMaterial({ map: torusTexture });
     
     const torus = new THREE.Mesh(geometry, material);
-    torus.rotation.x = Math.PI / 2; // Make the torus horizontal (along the XZ plane)
+    torus.rotation.x = Math.PI / 2;
     torus.position.set(0,-10,0);
     torus.castShadow = true;
     torus.receiveShadow = true;

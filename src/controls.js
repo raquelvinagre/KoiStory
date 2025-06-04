@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
-import { camera, renderer, scene } from "./scene.js"; 
+import { camera, renderer, scene } from "./scene.js";
 import { bgMusic, startGame, stopGame, updateFeedbacks } from "./game.js";
-import { fishGroup, swapBoatModel, boatModel1, boatModel2, currentBoatGroup } from "./models.js";    
+import { fishGroup, swapBoatModel, boatModel1, boatModel2, currentBoatGroup } from "./models.js";
 
-let cameraPivot;  
+let cameraPivot;
 let isFixedCamera = false;
 const fixedCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 let time = 0;
@@ -41,12 +41,12 @@ button.style.transform = "translate(-50%, 50%)";
 document.body.appendChild(button);
 button.style.display = "none";
 
-// Show button when the boat is in the dock area
+// Button to visit Koi Store
 const dockButton = document.createElement("div");
 dockButton.innerHTML = "<strong>Press [E] to visit Koi Store</strong>";
 dockButton.style.color = "white";
 dockButton.style.position = "absolute";
-dockButton.style.bottom = "25%"; // Positioned higher than the space button
+dockButton.style.bottom = "25%";
 dockButton.style.left = "50%";
 dockButton.style.backgroundColor = 'rgba(14, 12, 97, 0.4)';
 dockButton.style.padding = "10px 20px";
@@ -66,9 +66,21 @@ controls.style.zIndex = "9";
 controls.style.display = "none";
 document.body.appendChild(controls);
 
+const escapeText = document.createElement('p');
+escapeText.innerHTML = '<strong>Press [Esc] to pause the game</strong>';
+escapeText.style.position = 'absolute';
+escapeText.style.bottom = '20px';
+escapeText.style.left = '30px';
+escapeText.style.margin = '0';
+escapeText.style.fontSize = '16px';
+escapeText.style.color = 'white';
+escapeText.style.zIndex = '9';
+document.body.appendChild(escapeText);
+
 // Show/hide controls depending on camera mode
 function updateControlsVisibility() {
     controls.style.display = isFixedCamera ? "none" : "block";
+    escapeText.style.display = isFixedCamera ? "block" : "none";
 }
 
 // Call on camera toggle
@@ -83,13 +95,10 @@ const dockSound = new Audio('music/blob.mp3');
 window.addEventListener("keydown", (event) => {
     if (event.code === "KeyE" && dockButton.style.display === "block") {
         if (!isDocked) {
-            // Switch to docked boat model
             swapBoatModel(true);
-
             isDocked = true;
             dockSound.play();
         } else {
-            // Switch back to regular boat model
             swapBoatModel(false);
             isDocked = false;
             dockSound.play();
@@ -98,22 +107,17 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-// Also update on load
 updateControlsVisibility();
 
 export function initializeControls(sceneInstance) {
     cameraPivot = new THREE.Object3D();
-    sceneInstance.add(cameraPivot);  
+    sceneInstance.add(cameraPivot);
 
     fixedCamera.position.set(0, 10, 10);
     fixedCamera.lookAt(0, 0, 50);
 
     camera.position.set(0, 30, 60);
-    cameraPivot.add(camera);  
-
-    // const controls = new OrbitControls(camera, renderer.domElement);
-    // controls.enableDamping = true;
-    // controls.dampingFactor = 0.1;
+    cameraPivot.add(camera);
 
     window.addEventListener("keydown", (event) => {
         if (event.code === "Space" && button.style.display === "block") {
@@ -131,7 +135,7 @@ function highlightSelectedDifficulty(container, selectedBtn) {
         btn.style.backgroundColor = '';
         btn.style.color = '';
     });
-    selectedBtn.style.backgroundColor = 'rgba(91, 255, 239, 0.8)';
+    selectedBtn.style.backgroundColor = 'rgba(114, 230, 240, 0.83)';
     selectedBtn.style.color = 'black';
 }
 
@@ -144,7 +148,7 @@ function createTitleScreen() {
         titleScreen.style.left = '0';
         titleScreen.style.width = '100%';
         titleScreen.style.height = '100%';
-        titleScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.65)';
+        titleScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         titleScreen.style.display = 'flex';
         titleScreen.style.flexDirection = 'column';
         titleScreen.style.justifyContent = 'center';
@@ -153,20 +157,10 @@ function createTitleScreen() {
         titleScreen.style.color = 'white';
         titleScreen.style.textAlign = 'center';
         titleScreen.innerHTML = `
-            <h1>🎸 Koy Story is a rhythm based game!</h1>
-            <p>Use headphones for a better experience.</p>
-            <p>Hit the correct keys as notes cross the line!</p>
+            <h1>Koi Story is a rhythm based game!</h1>
+            <p>Hit the correct keys as notes reach the pads!</p>
             <p>Place your fingers on the following keys: <strong>D F J K</strong></p>
         `;
-
-        const escapeText = document.createElement('p');
-        escapeText.innerHTML = '<strong>Press [Esc] to pause the game</strong>';
-        escapeText.style.position = 'absolute';
-        escapeText.style.bottom = '20px';
-        escapeText.style.left = '30px';
-        escapeText.style.margin = '0';
-        escapeText.style.fontSize = '16px';
-        titleScreen.appendChild(escapeText);
 
         const difficultyLabel = document.createElement('p');
         difficultyLabel.innerText = 'Select difficulty';
@@ -193,7 +187,7 @@ function createTitleScreen() {
 
             // Highlight Medium by default
             if (level.toLowerCase() === 'medium') {
-                button.style.backgroundColor = 'rgba(91, 255, 239, 0.8)';
+                button.style.backgroundColor = 'rgba(114, 230, 240, 0.83)';
                 button.style.color = 'black';
             }
 
@@ -215,7 +209,6 @@ function createTitleScreen() {
 
         titleScreen.appendChild(difficultyWrapper);
 
-
         const startButton = document.createElement('button');
         startButton.id = 'startButton';
         startButton.innerText = 'I´m ready to rock';
@@ -223,6 +216,10 @@ function createTitleScreen() {
         startButton.style.fontSize = '18px';
         startButton.style.marginTop = '20px';
         startButton.style.borderRadius = '10px';
+        startButton.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+        startButton.style.cursor = 'pointer';
+        startButton.onmouseenter = () => startButton.style.backgroundColor = 'rgba(203, 239, 255, 0.9).9)';;
+        startButton.onmouseleave = () => startButton.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';;
         titleScreen.appendChild(startButton);
 
         document.body.appendChild(titleScreen);
@@ -338,11 +335,11 @@ export function updateCamera(currentBoatGroup) {
             // Rocking animation
             fish.rotation.x = fish.initialRotation.x + Math.cos(time2 * 0.25 + i) * 0.2;
             fish.rotation.z = fish.initialRotation.z + Math.sin(time2 * 0.6 + i) * 2 * 0.05;
-            fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 0.05 + i) * (-0.01); 
+            fish.rotation.y = fish.initialRotation.y + Math.sin(time2 * 0.05 + i) * (-0.01);
 
             // Circular movement
-            const radius = 5 + i * 2; // Different radius for each fish
-            const speed = 0.5 + i * 0.1; // Slightly different speed for each fish
+            const radius = 5 + i * 2;
+            const speed = 0.5 + i * 0.1;
 
             // Previous position for direction calculation
             if (!fish.prevCircularPos) {
@@ -369,7 +366,6 @@ export function updateCamera(currentBoatGroup) {
             );
             if (dir.lengthSq() > 0.0001) {
                 dir.normalize();
-                // Fish model faces +Z by default; adjust if needed
                 const angle = Math.atan2(dir.x, dir.z);
                 fish.rotation.y = angle;
             }
@@ -393,11 +389,11 @@ export function updateCamera(currentBoatGroup) {
 
     // Show dock button if within dock boundaries
     const inDockArea = (
-        boatPosition.x >= DOCK_AREA.minX && 
+        boatPosition.x >= DOCK_AREA.minX &&
         boatPosition.x <= DOCK_AREA.maxX &&
-        boatPosition.z >= DOCK_AREA.minZ && 
+        boatPosition.z >= DOCK_AREA.minZ &&
         boatPosition.z <= DOCK_AREA.maxZ &&
-        boatPosition.y >= DOCK_AREA.minY && 
+        boatPosition.y >= DOCK_AREA.minY &&
         boatPosition.y <= DOCK_AREA.maxY
     );
 
@@ -405,11 +401,11 @@ export function updateCamera(currentBoatGroup) {
 
     // Show regular button if within regular boundaries
     const inRegularArea = (
-        boatPosition.x >= minX && 
+        boatPosition.x >= minX &&
         boatPosition.x <= maxX &&
-        boatPosition.z >= minZ && 
+        boatPosition.z >= minZ &&
         boatPosition.z <= maxZ &&
-        boatPosition.y >= minY && 
+        boatPosition.y >= minY &&
         boatPosition.y <= maxY
     );
     button.style.display = inRegularArea ? "block" : "none";
@@ -431,7 +427,7 @@ export function updateCamera(currentBoatGroup) {
             lastCameraState = false;
         }
 
-        const cameraOffset = new THREE.Vector3(0, 24, -60); // Above and behind the boat
+        const cameraOffset = new THREE.Vector3(0, 24, -60);
         const boatDirection = new THREE.Vector3();
         currentBoatGroup.getWorldDirection(boatDirection);
         boatDirection.y = 0;
@@ -441,7 +437,7 @@ export function updateCamera(currentBoatGroup) {
             .add(behindDirection)
             .add(new THREE.Vector3(0, cameraOffset.y, 0));
 
-        camera.position.lerp(finalCameraPos, 0.1); // Smooth camera follow
+        camera.position.lerp(finalCameraPos, 0.1);
         camera.lookAt(currentBoatGroup.position);
 
         renderer.render(scene, camera);

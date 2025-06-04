@@ -67,25 +67,6 @@ function startBackgroundMusic() {
 
 startBackgroundMusic();
 
-// // Optional: Add a mute toggle button
-// const muteButton = document.createElement('button');
-// muteButton.textContent = '🔊';
-// muteButton.style.position = 'absolute';
-// muteButton.style.top = '10px';
-// muteButton.style.right = '10px';
-// muteButton.style.color = 'white';
-// muteButton.style.fontWeight = 'bold';
-// muteButton.style.backgroundColor = 'rgba(0, 14, 39, 0.7)';
-// muteButton.style.borderRadius = '10px';
-// muteButton.style.padding = '5px';
-// muteButton.style.zIndex = '11';
-// document.body.appendChild(muteButton);
-
-// muteButton.addEventListener('click', () => {
-//   bgMusic.muted = !bgMusic.muted;
-//   muteButton.textContent = bgMusic.muted ? '🔇' : '🔊';
-// });
-
 // UI setup
 let gameStatusText = document.getElementById('gameStatusText');
 if (!gameStatusText) {
@@ -140,7 +121,7 @@ if (!pauseOverlay) {
   pauseOverlay.style.left = '0';
   pauseOverlay.style.width = '100%';
   pauseOverlay.style.height = '100%';
-  pauseOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+  pauseOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
   pauseOverlay.style.display = 'flex';
   pauseOverlay.style.flexDirection = 'column';
   pauseOverlay.style.justifyContent = 'center';
@@ -159,7 +140,6 @@ if (!pauseOverlay) {
   pauseOverlay.style.display = 'none';
   document.body.appendChild(pauseOverlay);
 
-  // Volume slider logic
   const volumeSlider = pauseOverlay.querySelector('#volumeSlider');
   if (volumeSlider) {
     volumeSlider.value = audio.volume;
@@ -169,9 +149,35 @@ if (!pauseOverlay) {
   }
 }
 
+let endGameScreen = document.getElementById('endGameScreen');
+if (!endGameScreen) { 
+  endGameScreen = document.createElement('div');
+  endGameScreen.id = 'endGameScreen'; 
+  endGameScreen.style.position = 'absolute';
+  endGameScreen.style.top = '0';
+  endGameScreen.style.left = '0';
+  endGameScreen.style.width = '100%';
+  endGameScreen.style.height = '100%';
+  endGameScreen.style.display = 'flex';
+  endGameScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+  endGameScreen.style.flexDirection = 'column';
+  endGameScreen.style.justifyContent = 'center';
+  endGameScreen.style.alignItems = 'center';
+  endGameScreen.style.color = 'white';
+  endGameScreen.style.fontSize = '24px';
+  endGameScreen.style.zIndex = '10';
+  endGameScreen.innerHTML = `
+    <h1>Game has ended!</h1>
+    <p id="finalScoreText">Your final score: 0</p>
+  `;
+  endGameScreen.style.display = 'none';
+  document.body.appendChild(endGameScreen);
+}
+
  window.addEventListener("keydown", (event) => {
      if (event.code === "Space") {
          pauseOverlay.style.display = 'none';
+         endGameScreen.style.display = 'none';
      }
  });
 
@@ -333,14 +339,6 @@ function createNote(laneIndex, length = 0) {
   note.position.set(x, 3, 80);
   note.userData = { laneIndex, length, holding: false, heldScore: 0 };
 
-  if (length > 0) {
-    const tailGeometry = new THREE.BoxGeometry(2, 0.8, length);
-    const tailMaterial = new THREE.MeshBasicMaterial({ color, opacity: 0.8, transparent: true });
-    const tail = new THREE.Mesh(tailGeometry, tailMaterial);
-    tail.position.set(0, 0, length / 2);
-    note.add(tail);
-  }
-
   notesGroup.add(note);
   notes.push(note);
   createFretLine();
@@ -477,6 +475,7 @@ function loadNoteMapAndStart(selectedDifficulty) {
         const delay = note.time * 500;
 
         const timeoutId = setTimeout(() => {
+          if (!isRunning || isPaused) return; // Prevent note spawn during pause or after stop
           createNote(note.lane, note.length || 0);
         }, delay);
         noteSpawnTimeouts.push(timeoutId);
@@ -496,6 +495,7 @@ function removeFishGroup() {
   }
 }
 
+
 function startGame(selectedDifficulty) {
   if (isRunning) return;
   bgMusic.pause();
@@ -510,6 +510,17 @@ function startGame(selectedDifficulty) {
   document.addEventListener('keydown', handleKeyPress);
   document.addEventListener('keyup', handleKeyUp);
 
+  audio.addEventListener('ended', () => {
+    if (isRunning) {
+      setTimeout(() => {
+        const finalScoreText = document.getElementById('finalScoreText');
+        if (finalScoreText) {
+        finalScoreText.textContent = `Your final score: ${score}`;
+      }
+      endGameScreen.style.display = 'flex'
+      }, 1000);
+    }
+  });
 }
 
 function pauseGame() {

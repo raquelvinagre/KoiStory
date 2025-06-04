@@ -9,7 +9,6 @@ import { updateNotes } from "./game.js";
 // const stats = new Stats();
 // document.body.appendChild(stats.dom);
 
-// Title screen container with transparent background
 const titleScreen = document.createElement('div');
 titleScreen.style.position = 'absolute';
 titleScreen.style.top = '0';
@@ -23,7 +22,6 @@ titleScreen.style.justifyContent = 'center';
 titleScreen.style.alignItems = 'center';
 titleScreen.style.zIndex = '101';
 
-// Title container with logo and title side by side
 const titleContainer = document.createElement('div');
 titleContainer.style.display = 'flex';
 titleContainer.style.flexDirection = 'row';
@@ -32,7 +30,7 @@ titleContainer.style.backgroundColor = 'rgba(0, 14, 39, 0.9)';
 titleContainer.style.padding = '20px 40px';
 titleContainer.style.borderRadius = '40px';
 titleContainer.style.marginBottom = '20px';
-titleContainer.style.gap = '20px'; // spacing between logo and title
+titleContainer.style.gap = '20px';
 
 const logo = document.createElement('img');
 logo.src = 'icons/koi.png';
@@ -95,12 +93,12 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Display coordinates
-const infoDiv = document.createElement('div');
-infoDiv.style.position = 'absolute';
-infoDiv.style.top = '80px';
-infoDiv.style.left = '10px';
-infoDiv.style.color = 'white';
-document.body.appendChild(infoDiv);
+// const infoDiv = document.createElement('div');
+// infoDiv.style.position = 'absolute';
+// infoDiv.style.top = '80px';
+// infoDiv.style.left = '10px';
+// infoDiv.style.color = 'white';
+// document.body.appendChild(infoDiv);
 
 let time = 0;
 

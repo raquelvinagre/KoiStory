@@ -72,7 +72,6 @@ export async function swapBoatModel(useBoat2) {
 }
 
 async function loadModels() {
-    // Load boat models and attachments
     boatModel1 = await loadModel("models/boat.glb", [0, 3.2, 0], [5, 5, 5], [0, 0, 0], boatGroup1);
     bugcatModel1 = await loadModel("models/bugcat.glb", [0, 3.5, 7.5], [0.1, 0.1, 0.1], [0, 0, 0], boatGroup1);
     ukeleleModel1 = await loadModel("models/ukelele.glb", [-1.25, 4.55, 9.55], [0.1, 0.1, 0.1], [0, 0, -Math.PI/4], boatGroup1);
@@ -94,7 +93,6 @@ async function loadModels() {
     loadModel("models/lilypad2.glb", [-250, 0, 300], [10, 10, 10]);
     loadModel("models/lilypad2.glb", [200, 0, -250], [10, 10, 10]);
 
-    // First group of fish (with default rotation [0, 0, 0])
     loadModel("models/koi.glb", [-100, -10, 0], [0.05, 0.05, 0.05], [0, 0, 0], fishGroup);
     loadModel("models/koi2.glb", [150, -4, 50], [50, 50, 50], [0, 0, 0], fishGroup);
     loadModel("models/koi2.glb", [140, -2, 200], [50, 50, 50], [0, 0, 0], fishGroup);
@@ -107,7 +105,6 @@ async function loadModels() {
     loadModel("models/koi.glb", [-330, -10, 120], [0.05, 0.05, 0.05], [0, 0, 0], fishGroup);
     loadModel("models/koi2.glb", [-70, -7, 350], [50, 50, 50], [0, 0, 0], fishGroup);
 
-    // Second group of fish (with specific rotation [0, Math.PI, 0])
     loadModel("models/koi2.glb", [-60, -2, 80], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
     loadModel("models/koi2.glb", [30, -2, 50], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
     loadModel("models/koi2.glb", [-40, -2, 60], [50, 50, 50], [0, Math.PI, 0], fishGroup2);

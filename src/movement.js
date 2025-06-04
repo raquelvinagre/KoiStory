@@ -22,14 +22,12 @@ const maxTilt = 0.2; // radians (~11 degrees)
 const tiltSpeed = 0.05; // how fast the tilt happens
 let currentTilt = 0;
 
-// Add this near the top with other constants
 const GAME_AREA_RADIUS = 770;
 const CENTER = new THREE.Vector3(0, 0, 0);
 
 function moveBoat() {
     if (!currentBoatGroup) return;
 
-    // Your existing movement code...
     const thrust = new THREE.Vector3();
     currentBoatGroup.getWorldDirection(thrust);
     thrust.y = 0;
@@ -64,17 +62,13 @@ function moveBoat() {
     const distanceFromCenter = newPosition.distanceTo(CENTER);
     
     if (distanceFromCenter > GAME_AREA_RADIUS) {
-        // Calculate pushback direction (toward center)
         const pushDirection = CENTER.clone().sub(currentBoatGroup.position).normalize();
         
-        // Apply pushback force (stronger when farther out)
         const pushStrength = (distanceFromCenter - GAME_AREA_RADIUS) * 0.1;
         velocity.add(pushDirection.multiplyScalar(pushStrength));
         
-        // Also reduce current velocity
         velocity.multiplyScalar(0.8);
     } else {
-        // Only apply movement if within bounds
         currentBoatGroup.position.add(velocity);
     }
 
@@ -83,7 +77,5 @@ function moveBoat() {
     currentTilt += (tilting - currentTilt) * tiltSpeed;
     currentBoatGroup.rotation.z = currentTilt;
 }
-
-
 
 export { moveBoat };
