@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { camera, renderer, scene } from "./scene.js";
 import { bgMusic, startGame, stopGame, updateFeedbacks } from "./game.js";
-import { fishGroup, swapBoatModel, boatModel1, boatModel2, currentBoatGroup } from "./models.js";
+import { fishGroup, swapBoatModel } from "./models.js";
 
 let cameraPivot;
 let isFixedCamera = false;
@@ -92,16 +92,18 @@ window.addEventListener("keydown", (event) => {
 
 const dockSound = new Audio('music/blob.mp3');
 
+let dockedModelIndex = 0;
+const dockModelsCount = 4; // Set this to the number of models you want to cycle through
+
 window.addEventListener("keydown", (event) => {
     if (event.code === "KeyE" && dockButton.style.display === "block") {
-        if (!isDocked) {
-            swapBoatModel(true);
-            isDocked = true;
-            dockSound.play();
+        dockedModelIndex = (dockedModelIndex + 1) % dockModelsCount;
+        swapBoatModel(dockedModelIndex);
+        isDocked = dockedModelIndex !== 0;
+        dockSound.play();
+        if (isDocked) {
+            dockButton.innerHTML = `<strong>Press [E] to visit Koi Store</strong>`;
         } else {
-            swapBoatModel(false);
-            isDocked = false;
-            dockSound.play();
             dockButton.innerHTML = "<strong>Press [E] to visit Koi Store</strong>";
         }
     }
