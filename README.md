@@ -8,11 +8,10 @@
 The purpose of this project is to develop a 3D application to demonstrate the modeling and animation of objects, use of lighting, textures, (...), in a scenario of choice, with interactivity and user control.
 
 ### Concept
-The game is set in Japan, in a koi fish pond. Our character is a cat named Neko, who travels in his boat on the pond and enjoys giving concerts to the fish.
+The game is set in Japan, in a koi fish pond. Our main character, Bugcat, travels on his tiny boat inside the pond and enjoys giving concerts to the fish.
 
 ### Objective
-The basic idea of the project is similar to "Guitar Hero," a game where musical notes come towards the player, and they must press the right key at the right moment to earn points. The logic would be the same, but with the mentioned theme.
-In this case, the "musical notes" are the fish, which come towards the player. When the player hits them, their "score" and "streak" increase. (See Fig. 1)
+The basic idea of the project is similar to "Guitar Hero," a game where musical notes come towards the player, and they must press the right key at the right moment to increase their score.
 
 ### Other Features:
 There can be two "modes" of interaction with the application:
@@ -21,4 +20,6 @@ There can be two "modes" of interaction with the application:
 
 At any time, the user can switch between game modes by pressing the designated key.
 
-[Photos]
+![image](https://github.com/user-attachments/assets/81af0f31-f6f7-4aaa-a54a-a666cff171a9)
+
+![image](https://github.com/user-attachments/assets/00cee002-69b8-4c8e-807f-c5e52e7b5b0a)
