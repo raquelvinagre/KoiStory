@@ -16,9 +16,9 @@ The basic idea of the project is similar to "Guitar Hero," a game where musical 
 ### Other Features:
 There can be two "modes" of interaction with the application:
 1 - The music game mode, as explained above.
-2 - The "free mode," which consists of "exploring" the world. The camera changes, and the player controls the boat, which can navigate the fish pond.
+2 - The "free mode," which consists of "exploring" the world. The camera changes, and the player controls the boat, navigating the fish pond.
 
-At any time, the user can switch between game modes by pressing the designated key.
+At any time, the user can switch between game modes.
 
 ![image](https://github.com/user-attachments/assets/81af0f31-f6f7-4aaa-a54a-a666cff171a9)
 
