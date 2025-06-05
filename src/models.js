@@ -189,8 +189,27 @@ async function loadModels() {
         loadModel(path, fishPositions[i], fishScales[i], [0, 0, 0], fishGroup, true)
     ));
 
-    // Circular fish pattern
-    createCircularInstances("models/koi2.glb", 6, 50, [50, 50, 50], -2, [0, Math.PI, 0], fishGroup2);
+
+    function loadFish(path, position, scale, rotation = [0, 0, 0], parent = scene) {
+    return new Promise((resolve) => {
+        loader.load(path, (gltf) => {
+            const model = gltf.scene;
+            model.position.set(...position);
+            model.scale.set(...scale);
+            model.rotation.set(...rotation);
+            enableShadowCasting(model);
+            parent.add(model);
+            resolve(model);
+        }, undefined, (error) => console.error(`Error loading ${path}:`, error));
+    });
+}
+    //this sort of fish only loads with the loadFish function
+    loadFish("models/koi2.glb", [-60, -2, 80], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
+    loadFish("models/koi2.glb", [30, -2, 50], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
+    loadFish("models/koi2.glb", [-40, -2, 60], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
+    loadFish("models/koi2.glb", [50, -2, 110], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
+    loadFish("models/koi2.glb", [-30, -2, 90], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
+    loadFish("models/koi2.glb", [60, -2, 80], [50, 50, 50], [0, Math.PI, 0], fishGroup2);
 
     // Trees and flowers
     const sakuraPositions = [

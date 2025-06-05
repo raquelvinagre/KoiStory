@@ -347,6 +347,7 @@ function createNote(laneIndex, length = 0) {
 // Fish animation
 function addFishGroup() {
   scene.add(fishGroup2);
+  console.log("Fish group added to the scene");
 }
 
 function updateFishAnimation() {

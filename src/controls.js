@@ -125,7 +125,9 @@ export function initializeControls(sceneInstance) {
         if (event.code === "Space" && button.style.display === "block") {
             isFixedCamera = !isFixedCamera;
             button.innerHTML = isFixedCamera ? "<strong>Hit [Space] to leave</strong>" : "<strong>Hit [Space] to start playing</strong>";
-            titleScreen.style.display = 'none';
+            if (titleScreen) {
+                titleScreen.style.display = 'none';
+            }
         }
     });
 
